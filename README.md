@@ -2,4 +2,4 @@
 An assembler program for X65 CPU architecture.
 
 # Documentation
-Assembly documentation available in '/doc.html'.
+Assembly documentation available in '/x65-ref.html'.
