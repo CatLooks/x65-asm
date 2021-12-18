@@ -478,7 +478,7 @@ ref_t streamRef(vec<stream_t>& str) {
 };
 
 // create space tab
-void printTab(int c, st s) {
+/*void printTab(int c, st s) {
     for (int i = 0; i < c; i++)
         printf("%s", s);
-};
+};*/

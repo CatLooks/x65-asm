@@ -1,7 +1,7 @@
 // -- translator assembler -- //
 
 // request info
-void printRequest(req_t& req) {
+/*void printRequest(req_t& req) {
     printf("\e[38;5;129m");
     printData(req.arg.value);
     for (operation_t& b : req.arg.ops) {
@@ -10,7 +10,7 @@ void printRequest(req_t& req) {
         };
     printf("Size: %d\n", req.size);
     printf("\e[0m");
-};
+};*/
 
 // get variable pointer
 var_t* getVar(vec<var_t>& heap, mt name) {
@@ -543,7 +543,7 @@ void assembleUnknown(crt_t& crt, unv_t& unv) {
 // assemble unit
 void assembleUnit(crt_t& crt, asm_t& unit, vec<unv_t>& reqs) {
     // print unit data
-    if (unit.opcode != Int::Invalid)
+    /*if (unit.opcode != Int::Invalid)
         printf("Opc: %s\n", instructionNames[unit.opcode]);
     if (unit.label)
         printf("Lab: %s\n", unit.label);
@@ -554,7 +554,7 @@ void assembleUnit(crt_t& crt, asm_t& unit, vec<unv_t>& reqs) {
             printf("%s ", operatorName[b.action]);
             printData(b.value);
         };
-    };
+    };*/
 
     // validate
     if (!unit.valid)
@@ -566,7 +566,7 @@ void assembleUnit(crt_t& crt, asm_t& unit, vec<unv_t>& reqs) {
         label.name = null;
         label.pos = crt.spos;
         crt.labs.push_back(label);
-        printf("\n");
+        //printf("\n");
         return;
     };
 
@@ -576,7 +576,7 @@ void assembleUnit(crt_t& crt, asm_t& unit, vec<unv_t>& reqs) {
         label.name = unit.label;
         label.pos = crt.spos;
         crt.labs.push_back(label);
-        printf("\n");
+        //printf("\n");
         return;
     };
 
@@ -592,14 +592,18 @@ void assembleUnit(crt_t& crt, asm_t& unit, vec<unv_t>& reqs) {
         // parse each argument
         for (arg_t& element : unit.data) {
             req_t req = assembleArgument(crt.heap, element, false, isBranch(unit.opcode), true);
-            printRequest(req);
+            //printRequest(req);
 
             // adjust addressing mode
             if (req.arg.value.type == 0 || req.used) {
                 if (mode == AddrMode::IMP) {
-                    mode = req.size == 2 ? (req.arg.value.lit ? AddrMode::DIM : AddrMode::DIR) : (req.arg.value.lit ? AddrMode::IMM : AddrMode::ZPG);
+                    mode = isBranch(unit.opcode) ? AddrMode::REL : (req.size == 2 ? (req.arg.value.lit ? AddrMode::DIM : AddrMode::DIR) : (req.arg.value.lit ? AddrMode::IMM : AddrMode::ZPG));
+                    if (isBranch(unit.opcode))
+                        req.size = 1;
+
                     unknown = req.size;
                     unv.req = req;
+                    unv.type = isBranch(unit.opcode);
                     continue;
                 };
             } else if (req.arg.value.type == 1) {
@@ -621,7 +625,7 @@ void assembleUnit(crt_t& crt, asm_t& unit, vec<unv_t>& reqs) {
             } else if (req.arg.value.type == 4) {
                 if (mode == AddrMode::IMP) {
                     mode = isBranch(unit.opcode) ? AddrMode::REL : AddrMode::DIR;
-                    unknown = 1;
+                    unknown = req.size;
                     unv.req = req;
                     unv.type = isBranch(unit.opcode);
                     continue;
@@ -648,13 +652,13 @@ void assembleUnit(crt_t& crt, asm_t& unit, vec<unv_t>& reqs) {
                 if (mode == AddrMode::ZPG) {
                     mode = AddrMode::ZPX;
                     length = 1;
-                    param = req.arg.value.num;
+                    //param = req.arg.value.num;
                     continue;
                 };
                 if (mode == AddrMode::DIR) {
                     mode = AddrMode::DRX;
                     length = 2;
-                    param = req.arg.value.num;
+                    //param = req.arg.value.num;
                     continue;
                 };
 
@@ -662,19 +666,19 @@ void assembleUnit(crt_t& crt, asm_t& unit, vec<unv_t>& reqs) {
                 if (mode == AddrMode::IMP) {
                     mode = AddrMode::ZPY;
                     length = 1;
-                    param = req.arg.value.num;
+                    //param = req.arg.value.num;
                     continue;
                 };
                 if (mode == AddrMode::ZPG) {
                     mode = AddrMode::ZPY;
                     length = 1;
-                    param = req.arg.value.num;
+                    //param = req.arg.value.num;
                     continue;
                 };
                 if (mode == AddrMode::DIR) {
                     mode = AddrMode::DRY;
                     length = 2;
-                    param = req.arg.value.num;
+                    //param = req.arg.value.num;
                     continue;
                 };
 
@@ -754,8 +758,8 @@ void assembleUnit(crt_t& crt, asm_t& unit, vec<unv_t>& reqs) {
         };
 
         // print addressing mode
-        printf("\e[38;5;192mMode: %s\n\e[0m", addrModeNames[mode]);
-        printf("\n");
+        //printf("\e[38;5;192mMode: %s\n\e[0m", addrModeNames[mode]);
+        //printf("\n");
 
         return;
     };
@@ -950,7 +954,7 @@ void assembleUnit(crt_t& crt, asm_t& unit, vec<unv_t>& reqs) {
         };
     };
 
-    printf("\n");
+    //printf("\n");
 };
 
 // assemble list
@@ -972,7 +976,7 @@ crt_t assembleList(vec<asm_t>& assembly) {
     };
 
     // print data
-    for (stream_t& str : crt.data) {
+    /*for (stream_t& str : crt.data) {
         printf("Stream %04X:\n", str.pos);
         for (dt i = 0; i < (dt)str.data.size(); i++) {
             printf("%02X ", str.data[i]);
@@ -982,7 +986,7 @@ crt_t assembleList(vec<asm_t>& assembly) {
         if ((int)str.data.size() % 16)
             printf("\n");
         printf("\n");
-    };
+    };*/
 
     /*printf("Heap:\n");
     for (var_t& var : crt.heap) {

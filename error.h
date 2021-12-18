@@ -92,7 +92,10 @@ void raise(error_t& error) {
         };
 
         // print error string
-        printf(" = \e[38;5;41m%s\e[0m\n", error.data);
+        if (colored)
+            printf(" = \e[38;5;41m%s\e[0m\n", error.data);
+        else
+            printf(" = %s\n", error.data);
 
     } else {
         if (colored)

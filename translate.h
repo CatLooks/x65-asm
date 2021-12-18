@@ -1,7 +1,7 @@
 // -- token translator -- //
 
 // print data
-void printData(data_t& data) {
+/*void printData(data_t& data) {
     switch (data.type) {
         case 0:
         printf("Line: %s", data.str);
@@ -40,7 +40,7 @@ void printData(data_t& data) {
     if (data.lit)
         printf(" const");
     printf("\n");
-};
+};*/
 
 // data types
 st dataName[] {
@@ -69,7 +69,7 @@ asm_t translateLine(token_t& root) {
             continue;
 
         // print token
-        tokenInfo(token);
+        //tokenInfo(token);
 
         // check for redundant tokens
         if (next == 0) {

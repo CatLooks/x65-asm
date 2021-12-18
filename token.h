@@ -225,7 +225,7 @@ token_t tokenizeFile(file_t& file) {
 };
 
 // print token info
-void tokenInfo(token_t& token, int level = 1) {
+/*void tokenInfo(token_t& token, int level = 1) {
     if (token.arr.empty()) {
         if (token.type == 0)
             return;
@@ -242,4 +242,4 @@ void tokenInfo(token_t& token, int level = 1) {
             tokenInfo(child, level + 1);
         };
     };
-};
+};*/
