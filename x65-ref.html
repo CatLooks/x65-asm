@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>X65 Reference</title>
+	<style type="text/css">
+		
+		body {
+			font-family: courier, monospace;
+			font-size: 14px;
+		}
+
+		table {
+			border-collapse: collapse;
+		}
+		td {
+			background-color: #FBEBAF;
+			border: 1px solid;
+			padding: 6px;
+			text-align: left;
+		}
+		#tdl {
+			background-color: #A7D99B;
+			text-align: center;
+		}
+		#tdh {
+			background-color: #A6D4DF;
+			text-align: center;
+		}
+		#tdu {
+			background-color: #FCF0C3;
+		}
+		#tdr {
+			background-color: #EBD1BE;
+			text-align: center;
+		}
+
+		.instr {
+			
+		}
+
+	</style>
+</head>
+<body>
+	<h1>Assembly</h1>
+
+	<!-- opcode table -->
+	<p><b>Opcodes</b>:</p>
+	<table>
+		<tr>
+			<td id="tdr"><b>$</b></td>
+			<td id="tdl">x0</td>
+			<td id="tdl">x1</td>
+			<td id="tdl">x2</td>
+			<td id="tdl">x3</td>
+			<td id="tdl">x4</td>
+			<td id="tdl">x5</td>
+			<td id="tdl">x6</td>
+			<td id="tdl">x7</td>
+			<td id="tdl">x8</td>
+			<td id="tdl">x9</td>
+			<td id="tdl">xA</td>
+			<td id="tdl">xB</td>
+			<td id="tdl">xC</td>
+			<td id="tdl">xD</td>
+			<td id="tdl">xE</td>
+			<td id="tdl">xF</td>
+		</tr>
+		<tr>
+			<td id="tdh">0x</td>
+			<td>NOP imp</td>
+			<td>AND dim</td>
+			<td>ADC dim</td>
+			<td id="tdu"></td>
+			<td>ASL dir</td>
+			<td>AND dir</td>
+			<td>ADC dir</td>
+			<td>CLC imp</td>
+			<td>JAM imp</td>
+			<td>AND dir,X</td>
+			<td>ADC dir,X</td>
+			<td id="tdu"></td>
+			<td>ASL dir,X</td>
+			<td>AND dir,Y</td>
+			<td>ADC dir,Y</td>
+			<td>TAB imp</td>
+		</tr>
+		<tr>
+			<td id="tdh">1x</td>
+			<td>BPL rel</td>
+			<td>AND imm</td>
+			<td>ADC imm</td>
+			<td id="tdu"></td>
+			<td>ASL A</td>
+			<td>AND zpg</td>
+			<td>ADC zpg</td>
+			<td>SEC imp</td>
+			<td>WAI imp</td>
+			<td>AND zpg,X</td>
+			<td>ADC zpg,X</td>
+			<td id="tdu"></td>
+			<td>ASL dir,Y</td>
+			<td>AND zpg,Y</td>
+			<td>ADC zpg,Y</td>
+			<td>TAX imp</td>
+		</tr>
+		<tr>
+			<td id="tdh">2x</td>
+			<td>JSR dir</td>
+			<td>ORA dim</td>
+			<td>SBC dim</td>
+			<td id="tdu"></td>
+			<td>LSR dir</td>
+			<td>ORA dir</td>
+			<td>SBC dir</td>
+			<td>CLI imp</td>
+			<td>INS imp</td>
+			<td>ORA dir,X</td>
+			<td>SBC dir,X</td>
+			<td id="tdu"></td>
+			<td>LSR dir,X</td>
+			<td>ORA dir,Y</td>
+			<td>SBC dir,Y</td>
+			<td>TAY imp</td>
+		</tr>
+		<tr>
+			<td id="tdh">3x</td>
+			<td>BMI rel</td>
+			<td>ORA imm</td>
+			<td>SBC imm</td>
+			<td id="tdu"></td>
+			<td>LSR A</td>
+			<td>ORA zpg</td>
+			<td>SBC zpg</td>
+			<td>SEI imp</td>
+			<td>DES imp</td>
+			<td>ORA zpg,X</td>
+			<td>SBC zpg,X</td>
+			<td id="tdu"></td>
+			<td>LSR dir,Y</td>
+			<td>ORA zpg,Y</td>
+			<td>SBC zpg,Y</td>
+			<td>TBA imp</td>
+		</tr>
+		<tr>
+			<td id="tdh">4x</td>
+			<td>RTI imp</td>
+			<td>XOR dim</td>
+			<td>INX imp</td>
+			<td id="tdu"></td>
+			<td>ROL dir</td>
+			<td>XOR dir</td>
+			<td>STZ dir</td>
+			<td>CLF imp</td>
+			<td>PHP imp</td>
+			<td>XOR dir,X</td>
+			<td>STZ dir,X</td>
+			<td id="tdu"></td>
+			<td>ROL dir,X</td>
+			<td>XOR dir,Y</td>
+			<td>STZ dir,Y</td>
+			<td>TXA imp</td>
+		</tr>
+		<tr>
+			<td id="tdh">5x</td>
+			<td>BVC rel</td>
+			<td>XOR imm</td>
+			<td>INY imp</td>
+			<td id="tdu"></td>
+			<td>ROL A</td>
+			<td>XOR zpg</td>
+			<td>STZ zpg</td>
+			<td>SEF imp</td>
+			<td>PLP imp</td>
+			<td>XOR zpg,X</td>
+			<td>STZ zpg,X</td>
+			<td id="tdu"></td>
+			<td>ROL dir,Y</td>
+			<td>XOR zpg,Y</td>
+			<td>STZ zpg,Y</td>
+			<td>TXY imp</td>
+		</tr>
+		<tr>
+			<td id="tdh">6x</td>
+			<td>RTS imp</td>
+			<td>LTA dim</td>
+			<td>DEX imp</td>
+			<td id="tdu"></td>
+			<td>ROR dir</td>
+			<td>LTA dir</td>
+			<td>STA dir</td>
+			<td>INC A</td>
+			<td>PHA imp</td>
+			<td>LTA dir,X</td>
+			<td>STA dir,X</td>
+			<td id="tdu"></td>
+			<td>ROR dir,X</td>
+			<td>LTA dir,Y</td>
+			<td>STA dir,Y</td>
+			<td>TYA imp</td>
+		</tr>
+		<tr>
+			<td id="tdh">7x</td>
+			<td>BVS rel</td>
+			<td>LTA imm</td>
+			<td>DEY imp</td>
+			<td id="tdu"></td>
+			<td>ROR A</td>
+			<td>LTA zpg</td>
+			<td>STA zpg</td>
+			<td>DEC A</td>
+			<td>PLA imp</td>
+			<td>LTA zpg,X</td>
+			<td>STA zpg,X</td>
+			<td id="tdu"></td>
+			<td>ROR dir,Y</td>
+			<td>LTA zpg,Y</td>
+			<td>STA zpg,Y</td>
+			<td>TYX imp</td>
+		</tr>
+		<tr>
+			<td id="tdh">8x</td>
+			<td>CLV imp</td>
+			<td>LTB dim</td>
+			<td>ADC B</td>
+			<td id="tdu"></td>
+			<td>CMP dir</td>
+			<td>LTB dir</td>
+			<td>STB dir</td>
+			<td id="tdu"></td>
+			<td>PHB imp</td>
+			<td>LTB dir,X</td>
+			<td>STB dir,X</td>
+			<td id="tdu"></td>
+			<td>CMP dir,X</td>
+			<td>LTB dir,Y</td>
+			<td>STB dir,Y</td>
+			<td>TXS imp</td>
+		</tr>
+		<tr>
+			<td id="tdh">9x</td>
+			<td>BCC rel</td>
+			<td>LTB imm</td>
+			<td>SBC B</td>
+			<td id="tdu"></td>
+			<td>CMP dim</td>
+			<td>LTB zpg</td>
+			<td>STB zpg</td>
+			<td id="tdu"></td>
+			<td>PLB imp</td>
+			<td>LTB zpg,X</td>
+			<td>STB zpg,X</td>
+			<td id="tdu"></td>
+			<td>CMP dir,Y</td>
+			<td>LTB zpg,Y</td>
+			<td>STB zpg,Y</td>
+			<td>TSX imp</td>
+		</tr>
+		<tr>
+			<td id="tdh">Ax</td>
+			<td>MUL B</td>
+			<td>LTX dim</td>
+			<td>AND B</td>
+			<td id="tdu"></td>
+			<td>CPX dir</td>
+			<td>LTX dir</td>
+			<td>STX dir</td>
+			<td id="tdu"></td>
+			<td>PHX imp</td>
+			<td>LTX dir,X</td>
+			<td>INC dir</td>
+			<td id="tdu"></td>
+			<td>BIT DIM</td>
+			<td>LTX dir,Y</td>
+			<td>STX dir,Y</td>
+			<td>THD imp</td>
+		</tr>
+		<tr>
+			<td id="tdh">Bx</td>
+			<td>BCS rel</td>
+			<td>LTX imm</td>
+			<td>ORA B</td>
+			<td id="tdu"></td>
+			<td>CPX dim</td>
+			<td>LTX zpg</td>
+			<td>STX zpg</td>
+			<td id="tdu"></td>
+			<td>PLX imp</td>
+			<td>LTX zpg,X</td>
+			<td>INC zpg</td>
+			<td id="tdu"></td>
+			<td>CPX dir,Y</td>
+			<td>LTX zpg,Y</td>
+			<td>STX zpg,Y</td>
+			<td>TDH imp</td>
+		</tr>
+		<tr>
+			<td id="tdh">Cx</td>
+			<td>DIV B</td>
+			<td>LTY dim</td>
+			<td>XOR B</td>
+			<td id="tdu"></td>
+			<td>CPY dir</td>
+			<td>LTY dir</td>
+			<td>STY dir</td>
+			<td id="tdu"></td>
+			<td>PHY imp</td>
+			<td>LTY dir,X</td>
+			<td>STY dir,X</td>
+			<td id="tdu"></td>
+			<td>CPY dir,X</td>
+			<td>LTY dir,Y</td>
+			<td>DEC dir</td>
+			<td>BRA rel</td>
+		</tr>
+		<tr>
+			<td id="tdh">Dx</td>
+			<td>BNE rel</td>
+			<td>LTY imm</td>
+			<td>CMP B</td>
+			<td id="tdu"></td>
+			<td>CPY dim</td>
+			<td>LTY zpg</td>
+			<td>STY zpg</td>
+			<td id="tdu"></td>
+			<td>PLY imp</td>
+			<td>LTY zpg,X</td>
+			<td>STY zpg,X</td>
+			<td id="tdu"></td>
+			<td>BIT B</td>
+			<td>LTY zpg,Y</td>
+			<td>DEC zpg</td>
+			<td>JMP dir</td>
+		</tr>
+		<tr>
+			<td id="tdh">Ex</td>
+			<td>MOD B</td>
+			<td>LTV X</td>
+			<td>CPX B</td>
+			<td id="tdu"></td>
+			<td>CMD dir</td>
+			<td>LTD dir</td>
+			<td>STD dir</td>
+			<td id="tdu"></td>
+			<td>PHD imp</td>
+			<td>LTD dir,X</td>
+			<td>STD dir,X</td>
+			<td id="tdu"></td>
+			<td>CMP dir,X</td>
+			<td>LTD dir,Y</td>
+			<td>STD dir,Y</td>
+			<td>JMP X</td>
+		</tr>
+		<tr>
+			<td id="tdh">Fx</td>
+			<td>BEQ rel</td>
+			<td>LTD imm</td>
+			<td>CPY B</td>
+			<td id="tdu"></td>
+			<td>CMD imm</td>
+			<td>LTD zpg</td>
+			<td>STD zpg</td>
+			<td id="tdu"></td>
+			<td>PLD imp</td>
+			<td>LTD zpg,X</td>
+			<td>STD zpg,X</td>
+			<td id="tdu"></td>
+			<td>CMD dir,Y</td>
+			<td>LTD zpg,Y</td>
+			<td>STD zpg,Y</td>
+			<td>JSR X</td>
+		</tr>
+	</table>
+
+	<!-- registers -->
+	<p><b>Registers</b>:</p>
+	<ul>
+		<li>A (16 bits) - Accumulator</li>
+		<ol>
+			<li>H (High Part)</li>
+			<li>D (Low Part)</li>
+		</ol>
+		<li>B (16 bits) - Buffer</li>
+		<li>X (16 bits) - X Index</li>
+		<li>Y (16 bits) - Y Index</li>
+		<li>I (16 bits) - Instruction Pointer</li>
+		<li>S (12 bits) - Stack Pointer</li>
+		<li>P (8 bits) - Processor Status</li>
+	</ul>
+
+	<!-- processor status bits -->
+	<p><b>Processor Status</b>:</p>
+	<p>Bits: NV--FIZC</p>
+	<ul>
+		<li>N - Negative</li>
+		<li>V - Overflow</li>
+		<li>F - Float Mode</li>
+		<li>I - Interrupt Disable</li>
+		<li>Z - Zero</li>
+		<li>C - Carry</li>
+	</ul>
+
+	<!-- addressing modes -->
+	<p><b>Addressing Modes</b>:</p>
+	<ul>
+		<li>Implied (IMP)</li>
+		<li>Accumulator (A)</li>
+		<li>Data Buffer (B)</li>
+		<li>Constant Byte (IMM)</li>
+		<li>Constant Word (DIM)</li>
+		<li>Relative (REL)</li>
+		<li>Direct (DIR)</li>
+		<li>Direct + X (DIR, X)</li>
+		<li>Direct + Y (DIR, Y)</li>
+		<li>Zero Page (ZPG)</li>
+		<li>Zero Page + X (ZPG, X)</li>
+		<li>Zero Page + Y (ZPG, Y)</li>
+		<li>Indirect (X)</li>
+	</ul>
+</body>
+</html>
