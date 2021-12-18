@@ -35,8 +35,17 @@
 			text-align: center;
 		}
 
-		.instr {
-			
+		.syntax {
+			border: 1px solid;
+			background-color: #F0F8FF;
+			color: #000000;
+			padding: 6px;
+		}
+		.code {
+			border: 1px solid;
+			background-color: #303841;
+			color: #F0F8FF;
+			padding: 6px;
 		}
 
 	</style>
@@ -417,5 +426,41 @@
 		<li>Zero Page + Y (ZPG, Y)</li>
 		<li>Indirect (X)</li>
 	</ul>
+
+	<!-- syntax -->
+	<h3>Syntax</h3>
+	<table>
+		<tr>
+			<th class="syntax">Code Type</th>
+			<th class="syntax">Example</th>
+		</tr>
+		<tr>
+			<td>Comments</td>
+			<td class="code">@ comment</td>
+		</tr>
+		<tr>
+			<td>Instructions</td>
+			<td class="code">
+				<p>opc arg</p>
+				<p>opc a, b</p>
+				<p>opc a b </p>
+			</td>
+		</tr>
+		<tr>
+			<td>Labels</td>
+			<td class="code">
+				<p>label:</p>
+				<p>label</p>
+			</td>
+		</tr>
+		<tr>
+			<td>Numbers</td>
+			<td class="code">
+				<p>#$num</p>
+				<p>$num</p>
+				<p>$num, reg</p>
+			</td>
+		</tr>
+	</table>
 </body>
 </html>
