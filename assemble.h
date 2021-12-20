@@ -541,7 +541,7 @@ void assembleUnknown(crt_t& crt, unv_t& unv) {
 };
 
 // assemble unit
-void assembleUnit(crt_t& crt, asm_t& unit, vec<unv_t>& reqs) {
+void assembleUnit(crt_t& crt, asm_t& unit, vec<asm_t>& al, vec<unv_t>& reqs) {
     // print unit data
     /*if (unit.opcode != Int::Invalid)
         printf("Opc: %s\n", instructionNames[unit.opcode]);
@@ -767,8 +767,104 @@ void assembleUnit(crt_t& crt, asm_t& unit, vec<unv_t>& reqs) {
     // process macros
     if (unit.opcode == Int::Set) {
         // check for empty arguments
+        if (unit.data.size() < 2) {
+            glerr.data = (mt)errorMessage[51];
+            glerr.line = unit.line;
+            raise(glerr);
+        };
+
+        // test for clean string
+        if (!unit.data[0].ops.empty() || unit.data[0].value.type != 0) {
+            glerr.data = (mt)errorMessage[41];
+            glerr.line = unit.data[0].value.line;
+            raise(glerr);
+        };
+        req_t req = assembleArgument(crt.heap, unit.data[1], false, false, false);
+
+        // create label
+        var_t* check = getVar(crt.heap, unit.data[0].value.str);
+        if (check == null) {
+            var_t var;
+            var.name = unit.data[0].value.str;
+            var.span = 0;
+            var.size = req.arg.value.type;
+            var.data = req.arg.value.num;
+            crt.heap.push_back(var);
+        } else {
+            if (check->size != req.arg.value.type) {
+                glerr.data = (mt)errorMessage[55];
+                glerr.line = unit.data[0].value.line;
+                raise(glerr);
+            };
+            check->data = req.arg.value.num;
+        };
+
+    } else if (unit.opcode == Int::Def) {
+        // check for empty arguments
         if (unit.data.empty()) {
             glerr.data = (mt)errorMessage[47];
+            glerr.line = unit.line;
+            raise(glerr);
+        };
+
+        // get type
+        lab_t lab;
+        int size;
+        if (!unit.data[0].ops.empty() || unit.data[0].value.type != 0) {
+            glerr.data = (mt)errorMessage[41];
+            glerr.line = unit.data[0].value.line;
+            raise(glerr);
+        };
+        if (strcmp(unit.data[0].value.str, "byte") == 0) {
+            size = 1;
+        } else if (strcmp(unit.data[0].value.str, "word") == 0) {
+            size = 2;
+        } else {
+            char text[256];
+            sprintf(text, errorMessage[54], unit.data[0].value.str);
+
+            glerr.data = text;
+            glerr.line = unit.data[0].value.line;
+            raise(glerr);
+        };
+
+        // get name
+        if (!unit.data[1].ops.empty() || unit.data[1].value.type != 0) {
+            glerr.data = (mt)errorMessage[41];
+            glerr.line = unit.data[1].value.line;
+            raise(glerr);
+        };
+        lab.name = unit.data[1].value.str;
+
+        // get count
+        if (unit.data.size() >= 3) {
+            if (!unit.data[2].ops.empty() || unit.data[1].value.type >= 3) {
+                glerr.data = (mt)errorMessage[42];
+                glerr.line = unit.data[2].value.line;
+                raise(glerr);
+            };
+            req_t req = assembleArgument(crt.heap, unit.data[2], false, false, false);
+            size *= req.arg.value.num;
+        };
+
+        // create new label
+        lab_t* test = getLabel(crt.labs, lab.name);
+        if (test) {
+            char text[256];
+            sprintf(text, errorMessage[56], unit.data[0].value.str);
+
+            glerr.data = text;
+            glerr.line = unit.data[0].value.line;
+            glerr.type = false;
+            raise(glerr);
+        };
+        crt.labs.push_back(lab);
+        crt.vpos += size;
+
+    } else if (unit.opcode == Int::Del) {
+        // check for empty arguments
+        if (unit.data.empty()) {
+            glerr.data = (mt)errorMessage[51];
             glerr.line = unit.line;
             raise(glerr);
         };
@@ -780,16 +876,34 @@ void assembleUnit(crt_t& crt, asm_t& unit, vec<unv_t>& reqs) {
             raise(glerr);
         };
 
-        // parse value
-        req_t req = assembleArgument(crt.heap, unit.data[1], false, false, false);
+        // check for variable
+        var_t* check = getVar(crt.heap, unit.data[0].value.str);
+        if (check) {
+            for (dt i = 0; i < (dt)crt.heap.size(); i++) {
+                if (&crt.heap[i] == check) {
+                    crt.heap.erase(crt.heap.begin() + i);
+                    break;
+                };
+            };
+        } else {
+            // check for label
+            lab_t* test = getLabel(crt.labs, unit.data[0].value.str);
+            if (test) {
+                for (dt i = 0; i < (dt)crt.labs.size(); i++) {
+                    if (&crt.labs[i] == test) {
+                        crt.labs.erase(crt.labs.begin() + i);
+                        break;
+                    };
+                };
+            } else {
+                char text[256];
+                sprintf(text, errorMessage[50], unit.data[0].value.str);
 
-        // create new label
-        var_t var;
-        var.name = unit.data[0].value.str;
-        var.span = 0;
-        var.size = req.arg.value.type;
-        var.data = req.arg.value.num;
-        crt.heap.push_back(var);
+                glerr.data = text;
+                glerr.line = unit.data[0].value.line;
+                raise(glerr);
+            };
+        };
 
     } else if (unit.opcode == Int::Spos) {
         // check for empty arguments
@@ -952,6 +1066,170 @@ void assembleUnit(crt_t& crt, asm_t& unit, vec<unv_t>& reqs) {
                 raise(glerr);
             };
         };
+    } else if (unit.opcode == Int::Fill) {
+        // check for empty arguments
+        if (unit.data.empty()) {
+            glerr.data = (mt)errorMessage[51];
+            glerr.line = unit.line;
+            raise(glerr);
+        };
+
+        // parse values
+        if (!unit.data[0].ops.empty() || unit.data[0].value.type >= 3) {
+            glerr.data = (mt)errorMessage[42];
+            glerr.line = unit.data[0].value.line;
+            raise(glerr);
+        };
+        req_t req1 = assembleArgument(crt.heap, unit.data[0], false, false, false);
+
+        if (unit.data.size() >= 2) {
+            if (!unit.data[1].ops.empty() || unit.data[1].value.type >= 3) {
+                glerr.data = (mt)errorMessage[42];
+                glerr.line = unit.data[0].value.line;
+                raise(glerr);
+            };
+            req_t req2 = assembleArgument(crt.heap, unit.data[1], false, false, false);
+
+            // fill bytes
+            for (int i = 0; i < req1.arg.value.num; i++) {
+                crt.data.back().data.push_back(req2.arg.value.num);
+            };
+        } else {
+            // fill bytes
+            for (int i = 0; i < req1.arg.value.num; i++) {
+                crt.data.back().data.push_back(0);
+            };
+        };
+    } else if (unit.opcode == Int::Align) {
+        // check for empty arguments
+        if (unit.data.empty()) {
+            glerr.data = (mt)errorMessage[51];
+            glerr.line = unit.line;
+            raise(glerr);
+        };
+
+        // parse values
+        if (!unit.data[0].ops.empty() || unit.data[0].value.type >= 3) {
+            glerr.data = (mt)errorMessage[42];
+            glerr.line = unit.data[0].value.line;
+            raise(glerr);
+        };
+        req_t req1 = assembleArgument(crt.heap, unit.data[0], false, false, false);
+
+        // check argument
+        if (req1.arg.value.num == 0) {
+            glerr.data = (mt)errorMessage[52];
+            glerr.line = unit.data[0].value.line;
+            raise(glerr);
+        };
+
+        // get offset
+        wt off = 0;
+        if (unit.data.size() >= 2) {
+            if (!unit.data[1].ops.empty() || unit.data[1].value.type >= 3) {
+                glerr.data = (mt)errorMessage[42];
+                glerr.line = unit.data[0].value.line;
+                raise(glerr);
+            };
+            req_t req2 = assembleArgument(crt.heap, unit.data[1], false, false, false);
+            off = req2.arg.value.num;
+        };
+
+        // get fill data
+        bt fill = 0;
+        if (unit.data.size() >= 3) {
+            if (!unit.data[2].ops.empty() || unit.data[2].value.type >= 3) {
+                glerr.data = (mt)errorMessage[42];
+                glerr.line = unit.data[0].value.line;
+                raise(glerr);
+            };
+            req_t req3 = assembleArgument(crt.heap, unit.data[2], false, false, false);
+            fill = req3.arg.value.num;
+        };
+
+        // fill bytes
+        for (int i = crt.data.back().pos + crt.data.back().data.size(); (i % req1.arg.value.num) != off; i++) {
+            crt.data.back().data.push_back(fill);
+        };
+    } else if (unit.opcode == Int::File) {
+        // check for empty arguments
+        if (unit.data.empty()) {
+            glerr.data = (mt)errorMessage[51];
+            glerr.line = unit.line;
+            raise(glerr);
+        };
+
+        // parse values
+        if (!unit.data[0].ops.empty() || unit.data[0].value.type != 3) {
+            glerr.data = (mt)errorMessage[53];
+            glerr.line = unit.data[0].value.line;
+            raise(glerr);
+        };
+        req_t req = assembleArgument(crt.heap, unit.data[0], true, false, false);
+
+        // check argument
+        if (req.arg.value.type != 3) {
+            glerr.data = (mt)errorMessage[53];
+            glerr.line = unit.data[0].value.line;
+            raise(glerr);
+        };
+
+        // open file
+        file_t file = fileLoad(req.arg.value.str);
+        if (!file.valid) {
+            char text[256];
+            sprintf(text, errorMessage[6], req.arg.value.str);
+
+            glerr.data = text;
+            glerr.line = req.arg.value.line;
+            raise(glerr);
+        };
+
+        // paste file contents
+        for (bt c : file.data) {
+            crt.data.back().data.push_back(c);
+        };
+    } else if (unit.opcode == Int::Lib) {
+        // check for empty arguments
+        if (unit.data.empty()) {
+            glerr.data = (mt)errorMessage[51];
+            glerr.line = unit.line;
+            raise(glerr);
+        };
+
+        // parse values
+        if (!unit.data[0].ops.empty() || unit.data[0].value.type != 3) {
+            glerr.data = (mt)errorMessage[53];
+            glerr.line = unit.data[0].value.line;
+            raise(glerr);
+        };
+        req_t req = assembleArgument(crt.heap, unit.data[0], true, false, false);
+
+        // check argument
+        if (req.arg.value.type != 3) {
+            glerr.data = (mt)errorMessage[53];
+            glerr.line = unit.data[0].value.line;
+            raise(glerr);
+        };
+
+        // open file
+        file_t file = fileRead(req.arg.value.str);
+        if (!file.valid) {
+            char text[256];
+            sprintf(text, errorMessage[6], req.arg.value.str);
+
+            glerr.data = text;
+            glerr.line = req.arg.value.line;
+            raise(glerr);
+        };
+        file_t* backup = glerr.file;
+
+        // parse library
+        token_t token = tokenizeFile(file);
+        translateToken(al, token);
+
+        // restore error file target
+        glerr.file = backup;
     };
 
     //printf("\n");
@@ -966,8 +1244,11 @@ crt_t assembleList(vec<asm_t>& assembly) {
     crt.data.push_back(stream_t());
 
     // assemble each unit
-    for (asm_t& unit : assembly) {
-        assembleUnit(crt, unit, reqs);
+    for (dt i = 0; i < assembly.size(); i++) {
+        asm_t& unit = assembly[i];
+        vec<asm_t> add;
+        assembleUnit(crt, unit, add, reqs);
+        assembly.insert(assembly.begin() + i + 1, add.begin(), add.end());
     };
 
     // process each value request

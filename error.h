@@ -56,11 +56,17 @@ st errorMessage[] {
     "addressing mode is already %s",        // 43
     "%s mode cannot be indexed",            // 44
     "\"%s\" does not support %s mode",      // 45
-    "instruction does not support names",   // 46
+    "undefined names are not supported",    // 46
     "instruction requires arguments",       // 47
     "anonymous branch was not found",       // 48
     "<%s> is not requestable",              // 49
-    "variable \"%s\" is not defined",       // 50
+    "label \"%s\" is not defined",          // 50
+    "instruction requires 2 arguments",     // 51
+    "alignment size cannot be zero",        // 52
+    "argument must be <string>",            // 53
+    "unknown type <%s>",                    // 54
+    "cannot redefine variable type",        // 55
+    "label \"%s\" is already defined",      // 56
 };
 
 // error coloring

@@ -17,9 +17,43 @@ file_t fileRead(st filename) {
     };
 
     // read symbols from file
-    while (feof(fp) == false)
-        file.data.push_back(fgetc(fp));
+    while (true) {
+        bt c = fgetc(fp);
+        if (feof(fp))
+            break;
+        file.data.push_back(c);
+    };
     file.data.push_back('\n');
+
+    // success
+    file.valid = true;
+    fclose(fp);
+    return file;
+};
+
+// file reader
+file_t fileLoad(st filename) {
+    file_t file;
+    file.name = filename;
+
+    // try opening file stream
+    FILE* fp = fopen(filename, "rb");
+    if (fp == null) {
+        fclose(fp);
+        char text[256];
+        sprintf(text, errorMessage[6], filename);
+
+        glerr.data = text;
+        raise(glerr);
+    };
+
+    // read symbols from file
+    while (true) {
+        bt c = fgetc(fp);
+        if (feof(fp))
+            break;
+        file.data.push_back(c);
+    };
 
     // success
     file.valid = true;

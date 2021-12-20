@@ -57,7 +57,7 @@ struct instruction_t {
         Count,
 
         // macros
-        Byte, Word, Fill, Align, Set, Def, Del, Spos, Fpos, Vpos, File, Lib, Size,
+        Byte, Word, Fill, Align, Set, Def, Del, Spos, Fpos, Vpos, File, Lib,
 
         // invalid
         Invalid
@@ -114,7 +114,7 @@ st instructionNames[] {
     null,
 
     // macros
-    ".byte", ".word", ".fill", ".align", ".set", ".def", ".del", ".spos", ".fpos", ".vpos", ".file", ".lib", ".size",
+    ".byte", ".word", ".fill", ".align", ".set", ".def", ".del", ".spos", ".fpos", ".vpos", ".file", ".lib",
 
     // invalid
     "???"

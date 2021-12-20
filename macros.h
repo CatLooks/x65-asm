@@ -193,6 +193,7 @@ data_t parseString(token_t& token, bool hex, bool bin) {
     // parse hexadecimal number
     if (hex) {
         dt num = 0;
+        dt len = 0;
 
         // fetch number
         dt i = 0;
@@ -200,6 +201,7 @@ data_t parseString(token_t& token, bool hex, bool bin) {
             char c = token.str[i++];
             if (c == 0x00)
                 break;
+            len++;
 
             // add new digit
             num *= 16;
@@ -236,7 +238,7 @@ data_t parseString(token_t& token, bool hex, bool bin) {
         };
 
         // success
-        data.type = 1 + ((num >> 8) ? 1 : 0);
+        data.type = 1 + (len >= 3 ? 1 : 0);
         data.num = num;
         return data;
     };
@@ -244,6 +246,7 @@ data_t parseString(token_t& token, bool hex, bool bin) {
     // parse binary number
     if (bin) {
         dt num = 0;
+        dt len = 0;
 
         // fetch number
         dt i = 0;
@@ -251,6 +254,7 @@ data_t parseString(token_t& token, bool hex, bool bin) {
             char c = token.str[i++];
             if (c == 0x00)
                 break;
+            len++;
 
             // add new digit
             num *= 2;
@@ -281,7 +285,7 @@ data_t parseString(token_t& token, bool hex, bool bin) {
         };
 
         // success
-        data.type = 1 + ((num >> 8) ? 1 : 0);
+        data.type = 1 + (len >= 9 ? 1 : 0);
         data.num = num;
         return data;
     };
