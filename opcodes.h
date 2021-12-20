@@ -57,7 +57,7 @@ struct instruction_t {
         Count,
 
         // macros
-        Byte, Word, Fill, Align, Set, Def, Del, Spos, Fpos, Vpos, File, Lib,
+        Byte, Word, Fill, Align, Set, Def, Del, Spos, Fpos, Vpos, File, Lib, Val,
 
         // invalid
         Invalid
@@ -114,7 +114,7 @@ st instructionNames[] {
     null,
 
     // macros
-    ".byte", ".word", ".fill", ".align", ".set", ".def", ".del", ".spos", ".fpos", ".vpos", ".file", ".lib",
+    ".byte", ".word", ".fill", ".align", ".set", ".def", ".del", ".spos", ".fpos", ".vpos", ".file", ".lib", ".val",
 
     // invalid
     "???"
@@ -199,7 +199,7 @@ const bt opcodeMatrix[Int::Count][AddrMode::Invalid] {
     {NOPC, NOPC, NOPC, NOPC, NOPC, 0xCF, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC}, // BEQ
     {0x67, 0x67, NOPC, NOPC, NOPC, NOPC, 0xAA, NOPC, NOPC, 0xBA, NOPC, NOPC, NOPC}, // INC
     {0x77, 0x77, NOPC, NOPC, NOPC, NOPC, 0xCE, NOPC, NOPC, 0xDE, NOPC, NOPC, NOPC}, // DEC
-    {NOPC, NOPC, 0xDC, 0xAC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC}, // BIT
+    {NOPC, NOPC, NOPC, 0xDC, 0xAC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC}, // BIT
     {0xA0, NOPC, 0xA0, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC}, // MUL
     {0xC0, NOPC, 0xC0, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC}, // DIV
     {0xE0, NOPC, 0xE0, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC}, // MOD

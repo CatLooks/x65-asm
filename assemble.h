@@ -799,6 +799,43 @@ void assembleUnit(crt_t& crt, asm_t& unit, vec<asm_t>& al, vec<unv_t>& reqs) {
             check->data = req.arg.value.num;
         };
 
+    } else if (unit.opcode == Int::Val) {
+        // check for empty arguments
+        if (unit.data.empty()) {
+            glerr.data = (mt)errorMessage[47];
+            glerr.line = unit.line;
+            raise(glerr);
+        };
+
+        // check label
+        var_t* check = getVar(crt.heap, unit.data[0].value.str);
+        if (check) {
+            if (colored)
+                printf("Variable: \e[38;5;41m%s\e[0m\n", unit.data[0].value.str);
+            else
+                printf("Variable: %s\n", unit.data[0].value.str);
+            printf("Type: %s\n", dataName[check->size]);
+            printf("Data: %04X\n\n", check->data);
+            printf("Size: %04X\n\n", check->span);
+        } else {
+            lab_t* test = getLabel(crt.labs, unit.data[0].value.str);
+            if (test) {
+                if (colored)
+                    printf("Label: \e[38;5;41m%s\e[0m\n", unit.data[0].value.str);
+                else
+                    printf("Label: %s\n", unit.data[0].value.str);
+                printf("Position: %04X\n\n", test->pos);
+            } else {
+                char text[256];
+                sprintf(text, errorMessage[50], unit.data[0].value.str);
+
+                glerr.data = text;
+                glerr.line = unit.data[0].value.line;
+                glerr.type = false;
+                raise(glerr);
+            };
+        };
+
     } else if (unit.opcode == Int::Def) {
         // check for empty arguments
         if (unit.data.empty()) {
@@ -846,8 +883,9 @@ void assembleUnit(crt_t& crt, asm_t& unit, vec<asm_t>& al, vec<unv_t>& reqs) {
             req_t req = assembleArgument(crt.heap, unit.data[2], false, false, false);
             size *= req.arg.value.num;
         };
+        lab.pos = crt.vpos;
 
-        // create new label
+        // check for existing label
         lab_t* test = getLabel(crt.labs, lab.name);
         if (test) {
             char text[256];
@@ -1093,11 +1131,13 @@ void assembleUnit(crt_t& crt, asm_t& unit, vec<asm_t>& al, vec<unv_t>& reqs) {
             // fill bytes
             for (int i = 0; i < req1.arg.value.num; i++) {
                 crt.data.back().data.push_back(req2.arg.value.num);
+                crt.spos++;
             };
         } else {
             // fill bytes
             for (int i = 0; i < req1.arg.value.num; i++) {
                 crt.data.back().data.push_back(0);
+                crt.spos++;
             };
         };
     } else if (unit.opcode == Int::Align) {
@@ -1150,6 +1190,7 @@ void assembleUnit(crt_t& crt, asm_t& unit, vec<asm_t>& al, vec<unv_t>& reqs) {
         // fill bytes
         for (int i = crt.data.back().pos + crt.data.back().data.size(); (i % req1.arg.value.num) != off; i++) {
             crt.data.back().data.push_back(fill);
+            crt.spos++;
         };
     } else if (unit.opcode == Int::File) {
         // check for empty arguments
@@ -1188,6 +1229,7 @@ void assembleUnit(crt_t& crt, asm_t& unit, vec<asm_t>& al, vec<unv_t>& reqs) {
         // paste file contents
         for (bt c : file.data) {
             crt.data.back().data.push_back(c);
+            crt.spos++;
         };
     } else if (unit.opcode == Int::Lib) {
         // check for empty arguments
