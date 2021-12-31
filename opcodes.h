@@ -54,6 +54,7 @@ struct instruction_t {
         BPL, BMI, BVC, BVS, BCC, BCS, BNE, BEQ, BRA,
         INC, DEC, BIT, MUL, DIV, MOD, LTV,
         JMP, JSR, RTS, RTI,
+        SEP, REP, TSB, TRB, PEA, BRK,
         Count,
 
         // macros
@@ -111,6 +112,7 @@ st instructionNames[] {
     "bpl", "bmi", "bvc", "bvs", "bcc", "bcs", "bne", "beq", "bra",
     "inc", "dec", "bit", "mul", "div", "mod", "ltv",
     "jmp", "jsr", "rts", "rti",
+    "sep", "rep", "tsb", "trb", "pea", "brk",
     null,
 
     // macros
@@ -121,7 +123,7 @@ st instructionNames[] {
 };
 
 // opcode decode matrix
-const bt NOPC = 0x03;
+const bt NOPC = 0xFB;
 const bt opcodeMatrix[Int::Count][AddrMode::Invalid] {
     //IMP   ACC   BUF   IMM   DIM   REL   DIR   DRX   DRY   ZPG   ZPX   ZPY   IND
     {0x00, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC}, // NOP
@@ -208,4 +210,10 @@ const bt opcodeMatrix[Int::Count][AddrMode::Invalid] {
     {NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, 0x20, NOPC, NOPC, NOPC, NOPC, NOPC, 0xFF}, // JSR
     {0x60, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC}, // RTS
     {0x40, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC}, // RTI
+    {0x0B, 0x0B, NOPC, 0x03, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC}, // SEP
+    {0x1B, 0x1B, NOPC, 0x13, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC}, // REP
+    {NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, 0x2B, NOPC, NOPC, 0x23, NOPC, NOPC, NOPC}, // TSB
+    {NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, 0x3B, NOPC, NOPC, 0x33, NOPC, NOPC, NOPC}, // TRB
+    {NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, 0x43, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC}, // PEA
+    {NOPC, NOPC, NOPC, 0x4B, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC, NOPC}, // BRK
 };

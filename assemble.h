@@ -815,7 +815,7 @@ void assembleUnit(crt_t& crt, asm_t& unit, vec<asm_t>& al, vec<unv_t>& reqs) {
             else
                 printf("Variable: %s\n", unit.data[0].value.str);
             printf("Type: %s\n", dataName[check->size]);
-            printf("Data: %04X\n\n", check->data);
+            printf("Data: %04X\n", check->data);
             printf("Size: %04X\n\n", check->span);
         } else {
             lab_t* test = getLabel(crt.labs, unit.data[0].value.str);

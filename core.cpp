@@ -49,6 +49,7 @@ int main(int argc, st* argv) {
     crt_t code = assembleList(assembly);
 
     // save assembly
+    glerr.file = null;
     file_t out = assembleFile(code, param.out);
     fileWrite(out);
 
