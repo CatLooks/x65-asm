@@ -1,0 +1,67 @@
+%YAML 1.2
+
+file_extensions:
+  - s, asm, x65
+version:
+  - 2
+scope: source.x65
+contexts:
+  main:
+    # select string
+    - match: '"'
+      scope: punctuation.definition.string.begin.x65
+      push: double_quoted_string
+
+    # select line comment
+    - match: '@'
+      scope: punctuation.definition.comment.x65
+      push: line_comment
+
+    # select symbols
+    - match: ',|\.|\?|!'
+      scope: punctuation.separator.x65
+    - match: '#|\$|%'
+      scope: punctuation.definition.annotation.x65
+
+    # select labels
+    - match: '^\w*(:|\s*$)'
+      scope: variable.language.x65
+
+    # select numbers
+    - match: '\b[0-9]+\b'
+      scope: constant.numeric.x65
+    - match: '\b(?i)(?<=\$)[0-9a-f]+\b'
+      scope: constant.numeric.x65
+
+    # select opcodes
+    - match: '\b(?i)(WAI|JAM|PHP|PLP|PHA|PLA|PHB|PLB|PHX|PLX|PHY|PLY|PHD|PLD|TAB|TAX|TAY|TBA|TXA|TXY|TYA|TYX|TXS|TSX|THD|TDH|CLC|SEC|CLI|SEI|CLF|SEF|CLV|INX|INY|INS|DEX|DEY|DES|ASL|LSR|ROL|ROR|CMP|CPX|CPY|CMD|AND|ORA|XOR|LTA|LTB|LTX|LTY|LTD|ADC|SBC|STZ|STA|STB|STX|STY|STD|BPL|BMI|BVC|BVS|BCC|BCS|BNE|BEQ|BRA|INC|DEC|BIT|MUL|DIV|MOD|LTV|JMP|JSR|RTS|RTI|NOP)\b'
+      scope: keyword.control.x65
+
+    # select macros
+    - match: '\b(byte|word|fill|align|set|def|del|spos|fpos|vpos|file|lib|val)\b'
+      scope: variable.function.x65
+
+    # select registers
+    - match: '\b(?i)(a|b|x|y)\b'
+      scope: storage.x65
+
+    # select operations
+    - match: '=|\+|-|\*|\/|&|\||\^|>>|<<'
+      scope: keyword.control.x65
+
+    # select offsets
+    - match: ':(-|\+)*'
+      scope: entity.other.inherited-class.asm
+
+  double_quoted_string:
+    - meta_scope: string.quoted.double.x65
+    - match: '\\.'
+      scope: constant.character.escape.x65
+    - match: '"'
+      scope: punctuation.definition.string.end.x65
+      pop: true
+
+  line_comment:
+    - meta_scope: comment.line.x65
+    - match: $
+      pop: true
