@@ -11,13 +11,30 @@
 		}
 
 		table {
+			border: 2px solid;
 			border-collapse: collapse;
+			overflow: none;
 		}
-		td {
+		td.h {
 			background-color: #FBEBAF;
 			border: 1px solid;
 			padding: 6px;
 			text-align: left;
+			cursor: pointer;
+		}
+		td.hh {
+			background-color: #12CF50;
+			border: 1px solid;
+			padding: 6px;
+			text-align: left;
+			cursor: pointer;
+			color: #F0F2FF;
+			font-weight: bold;
+		}
+		td.h:hover {
+			background-color: #1040FF;
+			color: #F0F2FF;
+			font-weight: bold;
 		}
 		#tdl {
 			background-color: #A7D99B;
@@ -34,7 +51,16 @@
 			background-color: #EBD1BE;
 			text-align: center;
 		}
+		#c {
+			text-align: center;
+		}
 
+		.details {
+			position: absolute;
+			border-radius: 8px;
+			border: 2px solid;
+			user-select: none;
+		}
 		.syntax {
 			border: 1px solid;
 			background-color: #F0F8FF;
@@ -47,420 +73,3936 @@
 			color: #F0F8FF;
 			padding: 6px;
 		}
+		.dtl {
+			background-color: #334B;
+			color: #F0F2FF;
+			padding: 6px;
+		}
+		.flags {
+			position: absolute;
+			left: 256px;
+		}
+		.pad {
+			padding: 10px 20px;
+		}
+
+		.description {
+			color: #112;
+			border: 2px solid;
+		}
+		tr.d:nth-child(even) {
+			background-color: #FCF0C3;
+		}
+		tr.d:nth-child(odd) {
+			background-color: #FBEBAF;
+		}
+		th.d {
+			background-color: #A7D99B;
+			text-align: center;
+			border: 1px solid;
+			padding: 3px;
+		}
+		td.d {
+			border: 1px solid;
+			padding: 3px;
+		}
+		tr:hover {
+			background-color: #C0C1C7;
+		}
+
+		.block {
+			display: block;
+		}
 
 	</style>
 </head>
 <body>
 	<h1>Assembly</h1>
 
-	<!-- opcode table -->
+	<!-- description -->
+	<p>The following assembly is used to program X65 CPU.</p>
+
+	<!-- opcode details -->
 	<p><b>Opcodes</b>:</p>
-	<table>
+	<div class="details" id="details-table">
+		<table>
+			<tr>
+				<th class="dtl">Opcode</th>
+				<td class="dtl" id="dtl-byte">-</td>
+			</tr>
+			<tr>
+				<th class="dtl">Name</th>
+				<td class="dtl" id="dtl-opc">-</td>
+			</tr>
+			<tr>
+				<th class="dtl">Action</th>
+				<td class="dtl" id="dtl-act">-</td>
+			</tr>
+			<tr>
+				<th class="dtl">Mode</th>
+				<td class="dtl" id="dtl-mode">-</td>
+			</tr>
+		</table>
+	</div>
+
+	<!-- opcode table -->
+	<table id="opcode-table">
 		<tr>
-			<td id="tdr"><b>$</b></td>
-			<td id="tdl">x0</td>
-			<td id="tdl">x1</td>
-			<td id="tdl">x2</td>
-			<td id="tdl">x3</td>
-			<td id="tdl">x4</td>
-			<td id="tdl">x5</td>
-			<td id="tdl">x6</td>
-			<td id="tdl">x7</td>
-			<td id="tdl">x8</td>
-			<td id="tdl">x9</td>
-			<td id="tdl">xA</td>
-			<td id="tdl">xB</td>
-			<td id="tdl">xC</td>
-			<td id="tdl">xD</td>
-			<td id="tdl">xE</td>
-			<td id="tdl">xF</td>
+			<td class="h" id="tdr"><b>$</b></td>
+			<td class="h" id="tdl">x0</td>
+			<td class="h" id="tdl">x1</td>
+			<td class="h" id="tdl">x2</td>
+			<td class="h" id="tdl">x3</td>
+			<td class="h" id="tdl">x4</td>
+			<td class="h" id="tdl">x5</td>
+			<td class="h" id="tdl">x6</td>
+			<td class="h" id="tdl">x7</td>
+			<td class="h" id="tdl">x8</td>
+			<td class="h" id="tdl">x9</td>
+			<td class="h" id="tdl">xA</td>
+			<td class="h" id="tdl">xB</td>
+			<td class="h" id="tdl">xC</td>
+			<td class="h" id="tdl">xD</td>
+			<td class="h" id="tdl">xE</td>
+			<td class="h" id="tdl">xF</td>
 		</tr>
 		<tr>
-			<td id="tdh">0x</td>
-			<td>NOP imp</td>
-			<td>AND dim</td>
-			<td>ADC dim</td>
-			<td id="tdu"></td>
-			<td>ASL dir</td>
-			<td>AND dir</td>
-			<td>ADC dir</td>
-			<td>CLC imp</td>
-			<td>JAM imp</td>
-			<td>AND dir,X</td>
-			<td>ADC dir,X</td>
-			<td id="tdu"></td>
-			<td>ASL dir,X</td>
-			<td>AND dir,Y</td>
-			<td>ADC dir,Y</td>
-			<td>TAB imp</td>
+			<td class="h" id="tdh">0x</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x00)" onclick="branch(0x00)" class="h">NOP imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x01)" onclick="branch(0x01)" class="h">AND dim</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x02)" onclick="branch(0x02)" class="h">ADC dim</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x03)" onclick="branch(0x03)" class="h">SEP imm</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x04)" onclick="branch(0x04)" class="h">ASL dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x05)" onclick="branch(0x05)" class="h">AND dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x06)" onclick="branch(0x06)" class="h">ADC dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x07)" onclick="branch(0x07)" class="h">CLC imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x08)" onclick="branch(0x08)" class="h">JAM imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x09)" onclick="branch(0x09)" class="h">AND dir,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x0A)" onclick="branch(0x0A)" class="h">ADC dir,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x0B)" onclick="branch(0x0B)" class="h">SEP A</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x0C)" onclick="branch(0x0C)" class="h">ASL dir,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x0D)" onclick="branch(0x0D)" class="h">AND dir,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x0E)" onclick="branch(0x0E)" class="h">ADC dir,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x0F)" onclick="branch(0x0F)" class="h">TAB imp</td>
 		</tr>
 		<tr>
-			<td id="tdh">1x</td>
-			<td>BPL rel</td>
-			<td>AND imm</td>
-			<td>ADC imm</td>
-			<td id="tdu"></td>
-			<td>ASL A</td>
-			<td>AND zpg</td>
-			<td>ADC zpg</td>
-			<td>SEC imp</td>
-			<td>WAI imp</td>
-			<td>AND zpg,X</td>
-			<td>ADC zpg,X</td>
-			<td id="tdu"></td>
-			<td>ASL dir,Y</td>
-			<td>AND zpg,Y</td>
-			<td>ADC zpg,Y</td>
-			<td>TAX imp</td>
+			<td class="h" id="tdh">1x</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x10)" onclick="branch(0x10)" class="h">BPL rel</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x11)" onclick="branch(0x11)" class="h">AND imm</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x12)" onclick="branch(0x12)" class="h">ADC imm</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x13)" onclick="branch(0x13)" class="h">REP imm</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x14)" onclick="branch(0x14)" class="h">ASL A</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x15)" onclick="branch(0x15)" class="h">AND zpg</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x16)" onclick="branch(0x16)" class="h">ADC zpg</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x17)" onclick="branch(0x17)" class="h">SEC imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x18)" onclick="branch(0x18)" class="h">WAI imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x19)" onclick="branch(0x19)" class="h">AND zpg,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x1A)" onclick="branch(0x1A)" class="h">ADC zpg,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x1B)" onclick="branch(0x1B)" class="h">REP A</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x1C)" onclick="branch(0x1C)" class="h">ASL dir,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x1D)" onclick="branch(0x1D)" class="h">AND zpg,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x1E)" onclick="branch(0x1E)" class="h">ADC zpg,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x1F)" onclick="branch(0x1F)" class="h">TAX imp</td>
 		</tr>
 		<tr>
-			<td id="tdh">2x</td>
-			<td>JSR dir</td>
-			<td>ORA dim</td>
-			<td>SBC dim</td>
-			<td id="tdu"></td>
-			<td>LSR dir</td>
-			<td>ORA dir</td>
-			<td>SBC dir</td>
-			<td>CLI imp</td>
-			<td>INS imp</td>
-			<td>ORA dir,X</td>
-			<td>SBC dir,X</td>
-			<td id="tdu"></td>
-			<td>LSR dir,X</td>
-			<td>ORA dir,Y</td>
-			<td>SBC dir,Y</td>
-			<td>TAY imp</td>
+			<td class="h" id="tdh">2x</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x20)" onclick="branch(0x20)" class="h">JSR dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x21)" onclick="branch(0x21)" class="h">ORA dim</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x22)" onclick="branch(0x22)" class="h">SBC dim</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x23)" onclick="branch(0x23)" class="h">TSB zpg</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x24)" onclick="branch(0x24)" class="h">LSR dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x25)" onclick="branch(0x25)" class="h">ORA dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x26)" onclick="branch(0x26)" class="h">SBC dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x27)" onclick="branch(0x27)" class="h">CLI imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x28)" onclick="branch(0x28)" class="h">INS imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x29)" onclick="branch(0x29)" class="h">ORA dir,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x2A)" onclick="branch(0x2A)" class="h">SBC dir,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x2B)" onclick="branch(0x2B)" class="h">TSB dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x2C)" onclick="branch(0x2C)" class="h">LSR dir,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x2D)" onclick="branch(0x2D)" class="h">ORA dir,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x2E)" onclick="branch(0x2E)" class="h">SBC dir,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x2F)" onclick="branch(0x2F)" class="h">TAY imp</td>
 		</tr>
 		<tr>
-			<td id="tdh">3x</td>
-			<td>BMI rel</td>
-			<td>ORA imm</td>
-			<td>SBC imm</td>
-			<td id="tdu"></td>
-			<td>LSR A</td>
-			<td>ORA zpg</td>
-			<td>SBC zpg</td>
-			<td>SEI imp</td>
-			<td>DES imp</td>
-			<td>ORA zpg,X</td>
-			<td>SBC zpg,X</td>
-			<td id="tdu"></td>
-			<td>LSR dir,Y</td>
-			<td>ORA zpg,Y</td>
-			<td>SBC zpg,Y</td>
-			<td>TBA imp</td>
+			<td class="h" id="tdh">3x</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x30)" onclick="branch(0x30)" class="h">BMI rel</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x31)" onclick="branch(0x31)" class="h">ORA imm</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x32)" onclick="branch(0x32)" class="h">SBC imm</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x33)" onclick="branch(0x33)" class="h">TRB zpg</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x34)" onclick="branch(0x34)" class="h">LSR A</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x35)" onclick="branch(0x35)" class="h">ORA zpg</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x36)" onclick="branch(0x36)" class="h">SBC zpg</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x37)" onclick="branch(0x37)" class="h">SEI imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x38)" onclick="branch(0x38)" class="h">DES imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x39)" onclick="branch(0x39)" class="h">ORA zpg,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x3A)" onclick="branch(0x3A)" class="h">SBC zpg,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x3B)" onclick="branch(0x3B)" class="h">TRB dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x3C)" onclick="branch(0x3C)" class="h">LSR dir,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x3D)" onclick="branch(0x3D)" class="h">ORA zpg,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x3E)" onclick="branch(0x3E)" class="h">SBC zpg,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x3F)" onclick="branch(0x3F)" class="h">TBA imp</td>
 		</tr>
 		<tr>
-			<td id="tdh">4x</td>
-			<td>RTI imp</td>
-			<td>XOR dim</td>
-			<td>INX imp</td>
-			<td id="tdu"></td>
-			<td>ROL dir</td>
-			<td>XOR dir</td>
-			<td>STZ dir</td>
-			<td>CLF imp</td>
-			<td>PHP imp</td>
-			<td>XOR dir,X</td>
-			<td>STZ dir,X</td>
-			<td id="tdu"></td>
-			<td>ROL dir,X</td>
-			<td>XOR dir,Y</td>
-			<td>STZ dir,Y</td>
-			<td>TXA imp</td>
+			<td class="h" id="tdh">4x</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x40)" onclick="branch(0x40)" class="h">RTI imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x41)" onclick="branch(0x41)" class="h">XOR dim</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x42)" onclick="branch(0x42)" class="h">INX imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x43)" onclick="branch(0x43)" class="h">PEA dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x44)" onclick="branch(0x44)" class="h">ROL dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x45)" onclick="branch(0x45)" class="h">XOR dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x46)" onclick="branch(0x46)" class="h">STZ dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x47)" onclick="branch(0x47)" class="h">CLF imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x48)" onclick="branch(0x48)" class="h">PHP imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x49)" onclick="branch(0x49)" class="h">XOR dir,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x4A)" onclick="branch(0x4A)" class="h">STZ dir,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x4B)" onclick="branch(0x4B)" class="h">BRK imm</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x4C)" onclick="branch(0x4C)" class="h">ROL dir,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x4D)" onclick="branch(0x4D)" class="h">XOR dir,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x4E)" onclick="branch(0x4E)" class="h">STZ dir,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x4F)" onclick="branch(0x4F)" class="h">TXA imp</td>
 		</tr>
 		<tr>
-			<td id="tdh">5x</td>
-			<td>BVC rel</td>
-			<td>XOR imm</td>
-			<td>INY imp</td>
-			<td id="tdu"></td>
-			<td>ROL A</td>
-			<td>XOR zpg</td>
-			<td>STZ zpg</td>
-			<td>SEF imp</td>
-			<td>PLP imp</td>
-			<td>XOR zpg,X</td>
-			<td>STZ zpg,X</td>
-			<td id="tdu"></td>
-			<td>ROL dir,Y</td>
-			<td>XOR zpg,Y</td>
-			<td>STZ zpg,Y</td>
-			<td>TXY imp</td>
+			<td class="h" id="tdh">5x</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x50)" onclick="branch(0x50)" class="h">BVC rel</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x51)" onclick="branch(0x51)" class="h">XOR imm</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x52)" onclick="branch(0x52)" class="h">INY imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0x54)" onclick="branch(0x54)" class="h">ROL A</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x55)" onclick="branch(0x55)" class="h">XOR zpg</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x56)" onclick="branch(0x56)" class="h">STZ zpg</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x57)" onclick="branch(0x57)" class="h">SEF imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x58)" onclick="branch(0x58)" class="h">PLP imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x59)" onclick="branch(0x59)" class="h">XOR zpg,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x5A)" onclick="branch(0x5A)" class="h">STZ zpg,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0x5C)" onclick="branch(0x5C)" class="h">ROL dir,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x5D)" onclick="branch(0x5D)" class="h">XOR zpg,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x5E)" onclick="branch(0x5E)" class="h">STZ zpg,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x5F)" onclick="branch(0x5F)" class="h">TXY imp</td>
 		</tr>
 		<tr>
-			<td id="tdh">6x</td>
-			<td>RTS imp</td>
-			<td>LTA dim</td>
-			<td>DEX imp</td>
-			<td id="tdu"></td>
-			<td>ROR dir</td>
-			<td>LTA dir</td>
-			<td>STA dir</td>
-			<td>INC A</td>
-			<td>PHA imp</td>
-			<td>LTA dir,X</td>
-			<td>STA dir,X</td>
-			<td id="tdu"></td>
-			<td>ROR dir,X</td>
-			<td>LTA dir,Y</td>
-			<td>STA dir,Y</td>
-			<td>TYA imp</td>
+			<td class="h" id="tdh">6x</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x60)" onclick="branch(0x60)" class="h">RTS imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x61)" onclick="branch(0x61)" class="h">LTA dim</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x62)" onclick="branch(0x62)" class="h">DEX imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0x64)" onclick="branch(0x64)" class="h">ROR dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x65)" onclick="branch(0x65)" class="h">LTA dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x66)" onclick="branch(0x66)" class="h">STA dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x67)" onclick="branch(0x67)" class="h">INC A</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x68)" onclick="branch(0x68)" class="h">PHA imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x69)" onclick="branch(0x69)" class="h">LTA dir,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x6A)" onclick="branch(0x6A)" class="h">STA dir,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0x6C)" onclick="branch(0x6C)" class="h">ROR dir,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x6D)" onclick="branch(0x6D)" class="h">LTA dir,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x6E)" onclick="branch(0x6E)" class="h">STA dir,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x6F)" onclick="branch(0x6F)" class="h">TYA imp</td>
 		</tr>
 		<tr>
-			<td id="tdh">7x</td>
-			<td>BVS rel</td>
-			<td>LTA imm</td>
-			<td>DEY imp</td>
-			<td id="tdu"></td>
-			<td>ROR A</td>
-			<td>LTA zpg</td>
-			<td>STA zpg</td>
-			<td>DEC A</td>
-			<td>PLA imp</td>
-			<td>LTA zpg,X</td>
-			<td>STA zpg,X</td>
-			<td id="tdu"></td>
-			<td>ROR dir,Y</td>
-			<td>LTA zpg,Y</td>
-			<td>STA zpg,Y</td>
-			<td>TYX imp</td>
+			<td class="h" id="tdh">7x</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x70)" onclick="branch(0x70)" class="h">BVS rel</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x71)" onclick="branch(0x71)" class="h">LTA imm</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x72)" onclick="branch(0x72)" class="h">DEY imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0x74)" onclick="branch(0x74)" class="h">ROR A</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x75)" onclick="branch(0x75)" class="h">LTA zpg</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x76)" onclick="branch(0x76)" class="h">STA zpg</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x77)" onclick="branch(0x77)" class="h">DEC A</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x78)" onclick="branch(0x78)" class="h">PLA imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x79)" onclick="branch(0x79)" class="h">LTA zpg,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x7A)" onclick="branch(0x7A)" class="h">STA zpg,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0x7C)" onclick="branch(0x7C)" class="h">ROR dir,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x7D)" onclick="branch(0x7D)" class="h">LTA zpg,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x7E)" onclick="branch(0x7E)" class="h">STA zpg,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x7F)" onclick="branch(0x7F)" class="h">TYX imp</td>
 		</tr>
 		<tr>
-			<td id="tdh">8x</td>
-			<td>CLV imp</td>
-			<td>LTB dim</td>
-			<td>ADC B</td>
-			<td id="tdu"></td>
-			<td>CMP dir</td>
-			<td>LTB dir</td>
-			<td>STB dir</td>
-			<td id="tdu"></td>
-			<td>PHB imp</td>
-			<td>LTB dir,X</td>
-			<td>STB dir,X</td>
-			<td id="tdu"></td>
-			<td>CMP dir,X</td>
-			<td>LTB dir,Y</td>
-			<td>STB dir,Y</td>
-			<td>TXS imp</td>
+			<td class="h" id="tdh">8x</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x80)" onclick="branch(0x80)" class="h">CLV imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x81)" onclick="branch(0x81)" class="h">LTB dim</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x82)" onclick="branch(0x82)" class="h">ADC B</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0x84)" onclick="branch(0x84)" class="h">CMP dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x85)" onclick="branch(0x85)" class="h">LTB dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x86)" onclick="branch(0x86)" class="h">STB dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0x88)" onclick="branch(0x88)" class="h">PHB imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x89)" onclick="branch(0x89)" class="h">LTB dir,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x8A)" onclick="branch(0x8A)" class="h">STB dir,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0x8C)" onclick="branch(0x8C)" class="h">CMP dir,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x8D)" onclick="branch(0x8D)" class="h">LTB dir,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x8E)" onclick="branch(0x8E)" class="h">STB dir,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x8F)" onclick="branch(0x8F)" class="h">TXS imp</td>
 		</tr>
 		<tr>
-			<td id="tdh">9x</td>
-			<td>BCC rel</td>
-			<td>LTB imm</td>
-			<td>SBC B</td>
-			<td id="tdu"></td>
-			<td>CMP dim</td>
-			<td>LTB zpg</td>
-			<td>STB zpg</td>
-			<td id="tdu"></td>
-			<td>PLB imp</td>
-			<td>LTB zpg,X</td>
-			<td>STB zpg,X</td>
-			<td id="tdu"></td>
-			<td>CMP dir,Y</td>
-			<td>LTB zpg,Y</td>
-			<td>STB zpg,Y</td>
-			<td>TSX imp</td>
+			<td class="h" id="tdh">9x</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x90)" onclick="branch(0x90)" class="h">BCC rel</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x91)" onclick="branch(0x91)" class="h">LTB imm</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x92)" onclick="branch(0x92)" class="h">SBC B</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0x94)" onclick="branch(0x94)" class="h">CMP dim</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x95)" onclick="branch(0x95)" class="h">LTB zpg</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x96)" onclick="branch(0x96)" class="h">STB zpg</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0x98)" onclick="branch(0x98)" class="h">PLB imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x99)" onclick="branch(0x99)" class="h">LTB zpg,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x9A)" onclick="branch(0x9A)" class="h">STB zpg,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0x9C)" onclick="branch(0x9C)" class="h">CMP dir,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x9D)" onclick="branch(0x9D)" class="h">LTB zpg,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x9E)" onclick="branch(0x9E)" class="h">STB zpg,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0x9F)" onclick="branch(0x9F)" class="h">TSX imp</td>
 		</tr>
 		<tr>
-			<td id="tdh">Ax</td>
-			<td>MUL B</td>
-			<td>LTX dim</td>
-			<td>AND B</td>
-			<td id="tdu"></td>
-			<td>CPX dir</td>
-			<td>LTX dir</td>
-			<td>STX dir</td>
-			<td id="tdu"></td>
-			<td>PHX imp</td>
-			<td>LTX dir,X</td>
-			<td>INC dir</td>
-			<td id="tdu"></td>
-			<td>BIT DIM</td>
-			<td>LTX dir,Y</td>
-			<td>STX dir,Y</td>
-			<td>THD imp</td>
+			<td class="h" id="tdh">Ax</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xA0)" onclick="branch(0xA0)" class="h">MUL B</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xA1)" onclick="branch(0xA1)" class="h">LTX dim</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xA2)" onclick="branch(0xA2)" class="h">AND B</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0xA4)" onclick="branch(0xA4)" class="h">CPX dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xA5)" onclick="branch(0xA5)" class="h">LTX dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xA6)" onclick="branch(0xA6)" class="h">STX dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0xA8)" onclick="branch(0xA8)" class="h">PHX imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xA9)" onclick="branch(0xA9)" class="h">LTX dir,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xAA)" onclick="branch(0xAA)" class="h">INC dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0xAC)" onclick="branch(0xAC)" class="h">BIT dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xAD)" onclick="branch(0xAD)" class="h">LTX dir,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xAE)" onclick="branch(0xAE)" class="h">STX dir,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xAF)" onclick="branch(0xAF)" class="h">THD imp</td>
 		</tr>
 		<tr>
-			<td id="tdh">Bx</td>
-			<td>BCS rel</td>
-			<td>LTX imm</td>
-			<td>ORA B</td>
-			<td id="tdu"></td>
-			<td>CPX dim</td>
-			<td>LTX zpg</td>
-			<td>STX zpg</td>
-			<td id="tdu"></td>
-			<td>PLX imp</td>
-			<td>LTX zpg,X</td>
-			<td>INC zpg</td>
-			<td id="tdu"></td>
-			<td>CPX dir,Y</td>
-			<td>LTX zpg,Y</td>
-			<td>STX zpg,Y</td>
-			<td>TDH imp</td>
+			<td class="h" id="tdh">Bx</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xB0)" onclick="branch(0xB0)" class="h">BCS rel</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xB1)" onclick="branch(0xB1)" class="h">LTX imm</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xB2)" onclick="branch(0xB2)" class="h">ORA B</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0xB4)" onclick="branch(0xB4)" class="h">CPX dim</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xB5)" onclick="branch(0xB5)" class="h">LTX zpg</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xB6)" onclick="branch(0xB6)" class="h">STX zpg</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0xB8)" onclick="branch(0xB8)" class="h">PLX imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xB9)" onclick="branch(0xB9)" class="h">LTX zpg,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xBA)" onclick="branch(0xBA)" class="h">INC zpg</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0xBC)" onclick="branch(0xBC)" class="h">CPX dir,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xBD)" onclick="branch(0xBD)" class="h">LTX zpg,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xBE)" onclick="branch(0xBE)" class="h">STX zpg,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xBF)" onclick="branch(0xBF)" class="h">TDH imp</td>
 		</tr>
 		<tr>
-			<td id="tdh">Cx</td>
-			<td>DIV B</td>
-			<td>LTY dim</td>
-			<td>XOR B</td>
-			<td id="tdu"></td>
-			<td>CPY dir</td>
-			<td>LTY dir</td>
-			<td>STY dir</td>
-			<td id="tdu"></td>
-			<td>PHY imp</td>
-			<td>LTY dir,X</td>
-			<td>STY dir,X</td>
-			<td id="tdu"></td>
-			<td>CPY dir,X</td>
-			<td>LTY dir,Y</td>
-			<td>DEC dir</td>
-			<td>BRA rel</td>
+			<td class="h" id="tdh">Cx</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xC0)" onclick="branch(0xC0)" class="h">DIV B</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xC1)" onclick="branch(0xC1)" class="h">LTY dim</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xC2)" onclick="branch(0xC2)" class="h">XOR B</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0xC4)" onclick="branch(0xC4)" class="h">CPY dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xC5)" onclick="branch(0xC5)" class="h">LTY dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xC6)" onclick="branch(0xC6)" class="h">STY dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0xC8)" onclick="branch(0xC8)" class="h">PHY imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xC9)" onclick="branch(0xC9)" class="h">LTY dir,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xCA)" onclick="branch(0xCA)" class="h">STY dir,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0xCC)" onclick="branch(0xCC)" class="h">CPY dir,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xCD)" onclick="branch(0xCD)" class="h">LTY dir,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xCE)" onclick="branch(0xCE)" class="h">DEC dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xCF)" onclick="branch(0xCF)" class="h">BRA rel</td>
 		</tr>
 		<tr>
-			<td id="tdh">Dx</td>
-			<td>BNE rel</td>
-			<td>LTY imm</td>
-			<td>CMP B</td>
-			<td id="tdu"></td>
-			<td>CPY dim</td>
-			<td>LTY zpg</td>
-			<td>STY zpg</td>
-			<td id="tdu"></td>
-			<td>PLY imp</td>
-			<td>LTY zpg,X</td>
-			<td>STY zpg,X</td>
-			<td id="tdu"></td>
-			<td>BIT B</td>
-			<td>LTY zpg,Y</td>
-			<td>DEC zpg</td>
-			<td>JMP dir</td>
+			<td class="h" id="tdh">Dx</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xD0)" onclick="branch(0xD0)" class="h">BNE rel</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xD1)" onclick="branch(0xD1)" class="h">LTY imm</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xD2)" onclick="branch(0xD2)" class="h">CMP B</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0xD4)" onclick="branch(0xD4)" class="h">CPY dim</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xD5)" onclick="branch(0xD5)" class="h">LTY zpg</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xD6)" onclick="branch(0xD6)" class="h">STY zpg</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0xD8)" onclick="branch(0xD8)" class="h">PLY imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xD9)" onclick="branch(0xD9)" class="h">LTY zpg,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xDA)" onclick="branch(0xDA)" class="h">STY zpg,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0xDC)" onclick="branch(0xDC)" class="h">BIT B</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xDD)" onclick="branch(0xDD)" class="h">LTY zpg,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xDE)" onclick="branch(0xDE)" class="h">DEC zpg</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xDF)" onclick="branch(0xDF)" class="h">JMP dir</td>
 		</tr>
 		<tr>
-			<td id="tdh">Ex</td>
-			<td>MOD B</td>
-			<td>LTV X</td>
-			<td>CPX B</td>
-			<td id="tdu"></td>
-			<td>CMD dir</td>
-			<td>LTD dir</td>
-			<td>STD dir</td>
-			<td id="tdu"></td>
-			<td>PHD imp</td>
-			<td>LTD dir,X</td>
-			<td>STD dir,X</td>
-			<td id="tdu"></td>
-			<td>CMP dir,X</td>
-			<td>LTD dir,Y</td>
-			<td>STD dir,Y</td>
-			<td>JMP X</td>
+			<td class="h" id="tdh">Ex</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xE0)" onclick="branch(0xE0)" class="h">MOD B</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xE1)" onclick="branch(0xE1)" class="h">LTV X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xE2)" onclick="branch(0xE2)" class="h">CPX B</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0xE4)" onclick="branch(0xE4)" class="h">CMD dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xE5)" onclick="branch(0xE5)" class="h">LTD dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xE6)" onclick="branch(0xE6)" class="h">STD dir</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0xE8)" onclick="branch(0xE8)" class="h">PHD imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xE9)" onclick="branch(0xE9)" class="h">LTD dir,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xEA)" onclick="branch(0xEA)" class="h">STD dir,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0xEC)" onclick="branch(0xEC)" class="h">CMD dir,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xED)" onclick="branch(0xED)" class="h">LTD dir,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xEE)" onclick="branch(0xEE)" class="h">STD dir,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xEF)" onclick="branch(0xEF)" class="h">JMP X</td>
 		</tr>
 		<tr>
-			<td id="tdh">Fx</td>
-			<td>BEQ rel</td>
-			<td>LTD imm</td>
-			<td>CPY B</td>
-			<td id="tdu"></td>
-			<td>CMD imm</td>
-			<td>LTD zpg</td>
-			<td>STD zpg</td>
-			<td id="tdu"></td>
-			<td>PLD imp</td>
-			<td>LTD zpg,X</td>
-			<td>STD zpg,X</td>
-			<td id="tdu"></td>
-			<td>CMD dir,Y</td>
-			<td>LTD zpg,Y</td>
-			<td>STD zpg,Y</td>
-			<td>JSR X</td>
+			<td class="h" id="tdh">Fx</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xF0)" onclick="branch(0xF0)" class="h">BEQ rel</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xF1)" onclick="branch(0xF1)" class="h">LTD imm</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xF2)" onclick="branch(0xF2)" class="h">CPY B</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0xF4)" onclick="branch(0xF4)" class="h">CMD imm</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xF5)" onclick="branch(0xF5)" class="h">LTD zpg</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xF6)" onclick="branch(0xF6)" class="h">STD zpg</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0xF8)" onclick="branch(0xF8)" class="h">PLD imp</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xF9)" onclick="branch(0xF9)" class="h">LTD zpg,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xFA)" onclick="branch(0xFA)" class="h">STD zpg,X</td>
+			<td onmouseout="details(-2)" onmouseover="details(-1)"   class="h" id="tdu"></td>
+			<td onmouseout="details(-2)" onmouseover="details(0xFC)" onclick="branch(0xFC)" class="h">CMD dir,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xFD)" onclick="branch(0xFD)" class="h">LTD zpg,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xFE)" onclick="branch(0xFE)" class="h">STD zpg,Y</td>
+			<td onmouseout="details(-2)" onmouseover="details(0xFF)" onclick="branch(0xFF)" class="h">JSR X</td>
 		</tr>
 	</table>
 
 	<!-- registers -->
 	<p><b>Registers</b>:</p>
+	<table class="description">
+		<tr class="d">
+			<th class="d">Letter</th>
+			<th class="d">Name</th>
+			<th class="d">Size</th>
+			<th class="d">Function</th>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">A</td>
+			<td class="d" id="c">Accumulator</td>
+			<td class="d" id="c">16 bits</td>
+			<td class="d">Math Operations, Data Transfer</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">B</td>
+			<td class="d" id="c">Buffer</td>
+			<td class="d" id="c">16 bits</td>
+			<td class="d">Store Temporary Data</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">X</td>
+			<td class="d" id="c">X - Index</td>
+			<td class="d" id="c">16 bits</td>
+			<td class="d">Store Address Offsets</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">Y</td>
+			<td class="d" id="c">Y - Index</td>
+			<td class="d" id="c">16 bits</td>
+			<td class="d">Store Address Offsets</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">I</td>
+			<td class="d" id="c">Instruction Pointer</td>
+			<td class="d" id="c">16 bits</td>
+			<td class="d">Store Next Opcode Address</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">S</td>
+			<td class="d" id="c">Stack Pointer</td>
+			<td class="d" id="c">12 bits</td>
+			<td class="d">Store Next Stack Entry</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">P</td>
+			<td class="d" id="c">Processor Status</td>
+			<td class="d" id="c">8 bits</td>
+			<td class="d">Store Runtime Flags</td>
+		</tr>
+	</table>
 	<ul>
-		<li>A (16 bits) - Accumulator</li>
-		<ol>
-			<li>H (High Part)</li>
-			<li>D (Low Part)</li>
-		</ol>
-		<li>B (16 bits) - Buffer</li>
-		<li>X (16 bits) - X Index</li>
-		<li>Y (16 bits) - Y Index</li>
-		<li>I (16 bits) - Instruction Pointer</li>
-		<li>S (12 bits) - Stack Pointer</li>
-		<li>P (8 bits) - Processor Status</li>
+		<li>Accumulator is dividen on 2 8-bit parts: Data (D) and High (H), though only Data is available for direct access.</li>
+		<li>Stack Pointer will point at addresses $1000 - $1FFF.</li>
+		<li>Stack Limiter (V) will set the lower bounds of stack.</li>
 	</ul>
 
 	<!-- processor status bits -->
 	<p><b>Processor Status</b>:</p>
 	<p>Bits: NV--FIZC</p>
-	<ul>
-		<li>N - Negative</li>
-		<li>V - Overflow</li>
-		<li>F - Float Mode</li>
-		<li>I - Interrupt Disable</li>
-		<li>Z - Zero</li>
-		<li>C - Carry</li>
-	</ul>
+	<table class="description">
+		<tr class="d">
+			<th class="d">Letter</th>
+			<th class="d">Name</th>
+			<th class="d">Function</th>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">N</td>
+			<td class="d" id="c">Negative</td>
+			<td class="d">Is Bus Data Negative</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">V</td>
+			<td class="d" id="c">Overflow</td>
+			<td class="d">Overflow after Math</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">F</td>
+			<td class="d" id="c">Float Mode</td>
+			<td class="d">ALU Number Type</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">I</td>
+			<td class="d" id="c">Interrupt</td>
+			<td class="d">Disable IRQs</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">Z</td>
+			<td class="d" id="c">Zero</td>
+			<td class="d">Is Bus Data equal to Zero</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">C</td>
+			<td class="d" id="c">Carry</td>
+			<td class="d">Carry after Operation</td>
+		</tr>
+	</table>
 
 	<!-- addressing modes -->
 	<p><b>Addressing Modes</b>:</p>
+	<table class="description">
+		<tr class="d">
+			<th class="d">Notation</th>
+			<th class="d">Name</th>
+			<th class="d">Size</th>
+			<th class="d">Description</th>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">IMP</td>
+			<td class="d">Implied</td>
+			<td class="d" id="c">-</td>
+			<td class="d">Opcode does one specific action</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">A</td>
+			<td class="d">Accumulator</td>
+			<td class="d" id="c">-</td>
+			<td class="d">Operation on Accumulator</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">B</td>
+			<td class="d">Buffer</td>
+			<td class="d" id="c">-</td>
+			<td class="d">Operation with Buffer</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">IMM</td>
+			<td class="d">Immediate Byte</td>
+			<td class="d" id="c">1 byte</td>
+			<td class="d">Operation with Next Byte</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">DIM</td>
+			<td class="d">Immediate Word</td>
+			<td class="d" id="c">2 bytes</td>
+			<td class="d">Operation with Next Word</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">REL</td>
+			<td class="d">Relative</td>
+			<td class="d" id="c">1 byte</td>
+			<td class="d">Operation with Relative Address</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">DIR</td>
+			<td class="d">Direct</td>
+			<td class="d" id="c">2 bytes</td>
+			<td class="d">Operation with Data at Next Absolute Address</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">DRX</td>
+			<td class="d">Direct + X</td>
+			<td class="d" id="c">2 bytes</td>
+			<td class="d">Operation with Data at Next Absolute Address + X</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">DRY</td>
+			<td class="d">Direct + Y</td>
+			<td class="d" id="c">2 bytes</td>
+			<td class="d">Operation with Data at Next Absolute Address + Y</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">ZPG</td>
+			<td class="d">Zeropage</td>
+			<td class="d" id="c">1 byte</td>
+			<td class="d">Operation with Data at Next Zeropage Address</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">ZPX</td>
+			<td class="d">Zeropage + X</td>
+			<td class="d" id="c">1 byte</td>
+			<td class="d">Operation with Data at Next Zeropage Address + X</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">ZPY</td>
+			<td class="d">Zeropage + Y</td>
+			<td class="d" id="c">1 byte</td>
+			<td class="d">Operation with Data at Next Zeropage Address + Y</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">IND</td>
+			<td class="d">Indirect</td>
+			<td class="d" id="c">-</td>
+			<td class="d">Operation with Data at X</td>
+		</tr>
+	</table>
 	<ul>
-		<li>Implied (IMP)</li>
-		<li>Accumulator (A)</li>
-		<li>Data Buffer (B)</li>
-		<li>Constant Byte (IMM)</li>
-		<li>Constant Word (DIM)</li>
-		<li>Relative (REL)</li>
-		<li>Direct (DIR)</li>
-		<li>Direct + X (DIR, X)</li>
-		<li>Direct + Y (DIR, Y)</li>
-		<li>Zero Page (ZPG)</li>
-		<li>Zero Page + X (ZPG, X)</li>
-		<li>Zero Page + Y (ZPG, Y)</li>
-		<li>Indirect (X)</li>
+		<li>Zeropage is located at addresses $0000 - $00FF.</li>
+		<li>Accumulator and Buffer modes are technically the same as Implied mode, but marked for user's convenience. They usually can be written as Implied mode.</li>
 	</ul>
 
-	<!-- syntax -->
-	<h3>Syntax</h3>
-	<table>
+	<!-- opcode description -->
+	<p><b>Opcode Details</b>:</p>
+	<table class="shift">
 		<tr>
-			<th class="syntax">Code Type</th>
-			<th class="syntax">Example</th>
-		</tr>
-		<tr>
-			<td>Comments</td>
-			<td class="code">@ comment</td>
-		</tr>
-		<tr>
-			<td>Instructions</td>
-			<td class="code">
-				<p>opc arg</p>
-				<p>opc a, b</p>
-				<p>opc a b </p>
+			<td class="pad">
+				<h4>ADC</h4>
+			</td>
+			<td class="pad">
+				Add with Carry<br>
+				A + M + C -> A, C
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ + - - + +
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">BUF</td>
+						<td class="d">IMM</td>
+						<td class="d">DIM</td>
+						<td class="d">DIR</td>
+						<td class="d">DRX</td>
+						<td class="d">DRY</td>
+						<td class="d">ZPG</td>
+						<td class="d">ZPX</td>
+						<td class="d">ZPY</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$82</td>
+						<td class="d">$12</td>
+						<td class="d">$02</td>
+						<td class="d">$06</td>
+						<td class="d">$0A</td>
+						<td class="d">$0E</td>
+						<td class="d">$15</td>
+						<td class="d">$1A</td>
+						<td class="d">$1E</td>
+					</tr>
+				</table>
 			</td>
 		</tr>
 		<tr>
-			<td>Labels</td>
-			<td class="code">
-				<p>label:</p>
-				<p>label</p>
+			<td class="pad">
+				<h4>AND</h4>
+			</td>
+			<td class="pad">
+				AND with Accumulator<br>
+				A and M -> A
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">BUF</td>
+						<td class="d">IMM</td>
+						<td class="d">DIM</td>
+						<td class="d">DIR</td>
+						<td class="d">DRX</td>
+						<td class="d">DRY</td>
+						<td class="d">ZPG</td>
+						<td class="d">ZPX</td>
+						<td class="d">ZPY</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$A2</td>
+						<td class="d">$11</td>
+						<td class="d">$01</td>
+						<td class="d">$05</td>
+						<td class="d">$09</td>
+						<td class="d">$0D</td>
+						<td class="d">$15</td>
+						<td class="d">$19</td>
+						<td class="d">$1D</td>
+					</tr>
+				</table>
 			</td>
 		</tr>
 		<tr>
-			<td>Numbers</td>
-			<td class="code">
-				<p>#$num</p>
-				<p>$num</p>
-				<p>$num, reg</p>
+			<td class="pad">
+				<h4>ASL</h4>
+			</td>
+			<td class="pad">
+				Arithmetic Shift Left<br>
+				C <- bits <- 0
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + +
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">ACC</td>
+						<td class="d">DIR</td>
+						<td class="d">DRX</td>
+						<td class="d">DRY</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$14</td>
+						<td class="d">$04</td>
+						<td class="d">$0C</td>
+						<td class="d">$1C</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>BCC</h4>
+			</td>
+			<td class="pad">
+				Branch on Carry Clear<br>
+				branch on C = 0
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - $
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">REL</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$90</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>BCS</h4>
+			</td>
+			<td class="pad">
+				Branch on Carry Set<br>
+				branch on C = 1
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - $
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">REL</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$B0</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>BEQ</h4>
+			</td>
+			<td class="pad">
+				Branch on Equal<br>
+				branch on Z = 1
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - $ -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">REL</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$F0</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>BIT</h4>
+			</td>
+			<td class="pad">
+				Bit Test<br>
+				A and M, M15 -> N, M14 -> V
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				? ? - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">DIM</td>
+						<td class="d">BUF</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$AC</td>
+						<td class="d">$DC</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>BMI</h4>
+			</td>
+			<td class="pad">
+				Branch on Minus<br>
+				branch on N = 1
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				$ - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">REL</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$30</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>BNE</h4>
+			</td>
+			<td class="pad">
+				Branch on Not Equal<br>
+				branch on Z = 0
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - $ -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">REL</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$D0</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>BPL</h4>
+			</td>
+			<td class="pad">
+				Branch on Plus<br>
+				branch on N = 0
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				$ - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">REL</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$10</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>BEQ</h4>
+			</td>
+			<td class="pad">
+				Branch Always<br>
+				branch
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">REL</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$CF</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>BRK</h4>
+			</td>
+			<td class="pad">
+				Force Break<br>
+				M -> A, 1 -> I, IRQ
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - 1 + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMM</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$4B</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>BVC</h4>
+			</td>
+			<td class="pad">
+				Branch on Overflow Clear<br>
+				branch on V = 0
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- $ - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">REL</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$50</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>BVS</h4>
+			</td>
+			<td class="pad">
+				Branch on Overflow Set<br>
+				branch on V = 1
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- $ - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">REL</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$70</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>CLC</h4>
+			</td>
+			<td class="pad">
+				Clear Carry Flag<br>
+				0 -> C
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - 0
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$07</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>CLF</h4>
+			</td>
+			<td class="pad">
+				Clear Float Flag<br>
+				0 -> F
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - 0 - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$47</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>CLI</h4>
+			</td>
+			<td class="pad">
+				Clear IRQ Flag<br>
+				0 -> I
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - 0 - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$27</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>CLV</h4>
+			</td>
+			<td class="pad">
+				Clear Overflow Flag<br>
+				0 -> V
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- 0 - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$80</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>CMD</h4>
+			</td>
+			<td class="pad">
+				Compare Data<br>
+				D - M
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + +
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMM</td>
+						<td class="d">DIR</td>
+						<td class="d">DRX</td>
+						<td class="d">DRY</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$F4</td>
+						<td class="d">$E4</td>
+						<td class="d">$EC</td>
+						<td class="d">$FC</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>CMP</h4>
+			</td>
+			<td class="pad">
+				Compare Accumulator<br>
+				A - M
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + +
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">BUF</td>
+						<td class="d">DIM</td>
+						<td class="d">DIR</td>
+						<td class="d">DRX</td>
+						<td class="d">DRY</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$D2</td>
+						<td class="d">$94</td>
+						<td class="d">$84</td>
+						<td class="d">$8C</td>
+						<td class="d">$9C</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>CPX</h4>
+			</td>
+			<td class="pad">
+				Compare X<br>
+				X - M
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + +
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">BUF</td>
+						<td class="d">DIM</td>
+						<td class="d">DIR</td>
+						<td class="d">DRY</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$E2</td>
+						<td class="d">$B4</td>
+						<td class="d">$A4</td>
+						<td class="d">$BC</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>CPY</h4>
+			</td>
+			<td class="pad">
+				Compare Y<br>
+				Y - M
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + +
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">BUF</td>
+						<td class="d">DIM</td>
+						<td class="d">DIR</td>
+						<td class="d">DRX</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$F2</td>
+						<td class="d">$D4</td>
+						<td class="d">$C4</td>
+						<td class="d">$CC</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>DEC</h4>
+			</td>
+			<td class="pad">
+				Decrement<br>
+				M - 1 -> M
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">ACC</td>
+						<td class="d">DIR</td>
+						<td class="d">ZPG</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$77</td>
+						<td class="d">$CE</td>
+						<td class="d">$DE</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>DES</h4>
+			</td>
+			<td class="pad">
+				Decrement Stack<br>
+				S + 1 -> S
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$38</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>DEX</h4>
+			</td>
+			<td class="pad">
+				Decrement X<br>
+				X - 1 -> X
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$62</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>DEY</h4>
+			</td>
+			<td class="pad">
+				Decrement Y<br>
+				Y - 1 -> Y
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$72</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>DIV</h4>
+			</td>
+			<td class="pad">
+				Divide with Buffer<br>
+				A div B -> A
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - $ - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">BUF</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$62</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>INC</h4>
+			</td>
+			<td class="pad">
+				Increment<br>
+				M + 1 -> M
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">ACC</td>
+						<td class="d">DIR</td>
+						<td class="d">ZPG</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$67</td>
+						<td class="d">$AA</td>
+						<td class="d">$BA</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>INS</h4>
+			</td>
+			<td class="pad">
+				Increment Stack<br>
+				S - 1 -> S
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$28</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>INX</h4>
+			</td>
+			<td class="pad">
+				Increment X<br>
+				X + 1 -> X
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$42</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>INY</h4>
+			</td>
+			<td class="pad">
+				Increment Y<br>
+				Y + 1 -> Y
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$52</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>JAM</h4>
+			</td>
+			<td class="pad">
+				Jam Processor<br>
+				jam until RST
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$08</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>JMP</h4>
+			</td>
+			<td class="pad">
+				Jump to Address<br>
+				M -> I
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">DIR</td>
+						<td class="d">IND</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$DF</td>
+						<td class="d">$EF</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>JSR</h4>
+			</td>
+			<td class="pad">
+				Jump to Subroutine<br>
+				push I + 2, M -> I
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">DIR</td>
+						<td class="d">IND</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$20</td>
+						<td class="d">$FF</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>LSR</h4>
+			</td>
+			<td class="pad">
+				Logical Shift Right<br>
+				0 -> bits -> C
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				0 - - - + +
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">ACC</td>
+						<td class="d">DIR</td>
+						<td class="d">DRX</td>
+						<td class="d">DRY</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$34</td>
+						<td class="d">$24</td>
+						<td class="d">$2C</td>
+						<td class="d">$3C</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>LTA</h4>
+			</td>
+			<td class="pad">
+				Load to Accumulator<br>
+				M -> A
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMM</td>
+						<td class="d">DIM</td>
+						<td class="d">DIR</td>
+						<td class="d">DRX</td>
+						<td class="d">DRY</td>
+						<td class="d">ZPG</td>
+						<td class="d">ZPX</td>
+						<td class="d">ZPY</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$71</td>
+						<td class="d">$61</td>
+						<td class="d">$65</td>
+						<td class="d">$69</td>
+						<td class="d">$6D</td>
+						<td class="d">$75</td>
+						<td class="d">$79</td>
+						<td class="d">$7D</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>LTB</h4>
+			</td>
+			<td class="pad">
+				Load to Buffer<br>
+				M -> B
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMM</td>
+						<td class="d">DIM</td>
+						<td class="d">DIR</td>
+						<td class="d">DRX</td>
+						<td class="d">DRY</td>
+						<td class="d">ZPG</td>
+						<td class="d">ZPX</td>
+						<td class="d">ZPY</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$91</td>
+						<td class="d">$81</td>
+						<td class="d">$85</td>
+						<td class="d">$89</td>
+						<td class="d">$8D</td>
+						<td class="d">$95</td>
+						<td class="d">$99</td>
+						<td class="d">$9D</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>LTD</h4>
+			</td>
+			<td class="pad">
+				Load to Data<br>
+				M -> D
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMM</td>
+						<td class="d">DIR</td>
+						<td class="d">DRX</td>
+						<td class="d">DRY</td>
+						<td class="d">ZPG</td>
+						<td class="d">ZPX</td>
+						<td class="d">ZPY</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$F1</td>
+						<td class="d">$E5</td>
+						<td class="d">$E9</td>
+						<td class="d">$ED</td>
+						<td class="d">$F5</td>
+						<td class="d">$F9</td>
+						<td class="d">$FD</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>LTV</h4>
+			</td>
+			<td class="pad">
+				Load to Stack Limit<br>
+				X -> V
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IND</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$E1</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>LTX</h4>
+			</td>
+			<td class="pad">
+				Load to X<br>
+				M -> X
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMM</td>
+						<td class="d">DIM</td>
+						<td class="d">DIR</td>
+						<td class="d">DRX</td>
+						<td class="d">DRY</td>
+						<td class="d">ZPG</td>
+						<td class="d">ZPX</td>
+						<td class="d">ZPY</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$B1</td>
+						<td class="d">$A1</td>
+						<td class="d">$A5</td>
+						<td class="d">$A9</td>
+						<td class="d">$AD</td>
+						<td class="d">$B5</td>
+						<td class="d">$B9</td>
+						<td class="d">$BD</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>LTY</h4>
+			</td>
+			<td class="pad">
+				Load to Y<br>
+				M -> Y
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMM</td>
+						<td class="d">DIM</td>
+						<td class="d">DIR</td>
+						<td class="d">DRX</td>
+						<td class="d">DRY</td>
+						<td class="d">ZPG</td>
+						<td class="d">ZPX</td>
+						<td class="d">ZPY</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$D1</td>
+						<td class="d">$C1</td>
+						<td class="d">$C5</td>
+						<td class="d">$C9</td>
+						<td class="d">$CD</td>
+						<td class="d">$D5</td>
+						<td class="d">$D9</td>
+						<td class="d">$DD</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>MOD</h4>
+			</td>
+			<td class="pad">
+				Modulo with Buffer<br>
+				A mod B -> A
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - $ - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">BUF</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$E0</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>MUL</h4>
+			</td>
+			<td class="pad">
+				Multiply with Buffer<br>
+				A mul B -> A
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - $ - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">BUF</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$A0</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>NOP</h4>
+			</td>
+			<td class="pad">
+				No Operation<br>
+				-
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$00</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>ORA</h4>
+			</td>
+			<td class="pad">
+				OR with Accumulator<br>
+				A or M -> A
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">BUF</td>
+						<td class="d">IMM</td>
+						<td class="d">DIM</td>
+						<td class="d">DIR</td>
+						<td class="d">DRX</td>
+						<td class="d">DRY</td>
+						<td class="d">ZPG</td>
+						<td class="d">ZPX</td>
+						<td class="d">ZPY</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$B2</td>
+						<td class="d">$31</td>
+						<td class="d">$21</td>
+						<td class="d">$25</td>
+						<td class="d">$29</td>
+						<td class="d">$2D</td>
+						<td class="d">$35</td>
+						<td class="d">$39</td>
+						<td class="d">$3D</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>PEA</h4>
+			</td>
+			<td class="pad">
+				Push Effective Address<br>
+				push M
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">DIR</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$43</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>PHA</h4>
+			</td>
+			<td class="pad">
+				Push Accumulator<br>
+				push A
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$68</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>PHB</h4>
+			</td>
+			<td class="pad">
+				Push Buffer<br>
+				push B
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$88</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>PHD</h4>
+			</td>
+			<td class="pad">
+				Push Data<br>
+				push D
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$E8</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>PHP</h4>
+			</td>
+			<td class="pad">
+				Push Processor Status<br>
+				push P
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$48</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>PHX</h4>
+			</td>
+			<td class="pad">
+				Push X<br>
+				push X
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$A8</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>PHY</h4>
+			</td>
+			<td class="pad">
+				Push Y<br>
+				push Y
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$C8</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>PLA</h4>
+			</td>
+			<td class="pad">
+				Pull Accumulator<br>
+				pull A
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$78</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>PLB</h4>
+			</td>
+			<td class="pad">
+				Pull Buffer<br>
+				pull B
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$98</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>PLD</h4>
+			</td>
+			<td class="pad">
+				Pull Data<br>
+				pull D
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$F8</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>PLP</h4>
+			</td>
+			<td class="pad">
+				Pull Processor Status<br>
+				pull P
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ + + + + +
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$58</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>PLX</h4>
+			</td>
+			<td class="pad">
+				Pull X<br>
+				pull X
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$B8</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>PLY</h4>
+			</td>
+			<td class="pad">
+				Pull Y<br>
+				pull Y
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$D8</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>REP</h4>
+			</td>
+			<td class="pad">
+				Reset Status Bits<br>
+				P and (not M) -> P
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				? ? ? ? ? ?
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">ACC</td>
+						<td class="d">IMM</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$1B</td>
+						<td class="d">$13</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>ROL</h4>
+			</td>
+			<td class="pad">
+				Rotate Left<br>
+				C <- bits <- C
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + +
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">ACC</td>
+						<td class="d">DIR</td>
+						<td class="d">DRX</td>
+						<td class="d">DRY</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$54</td>
+						<td class="d">$44</td>
+						<td class="d">$4C</td>
+						<td class="d">$5C</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>ROR</h4>
+			</td>
+			<td class="pad">
+				Rotate Right<br>
+				C -> bits -> C
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + +
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">ACC</td>
+						<td class="d">DIR</td>
+						<td class="d">DRX</td>
+						<td class="d">DRY</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$74</td>
+						<td class="d">$64</td>
+						<td class="d">$6C</td>
+						<td class="d">$7C</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>RTI</h4>
+			</td>
+			<td class="pad">
+				Return from Interrupt<br>
+				pull P, pull I
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ + + + + +
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$40</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>RTS</h4>
+			</td>
+			<td class="pad">
+				Return from Subroutine<br>
+				pull I
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$60</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>SBC</h4>
+			</td>
+			<td class="pad">
+				Subtract with Carry<br>
+				A - M - (not C) -> A, C
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ + - - + +
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">BUF</td>
+						<td class="d">IMM</td>
+						<td class="d">DIM</td>
+						<td class="d">DIR</td>
+						<td class="d">DRX</td>
+						<td class="d">DRY</td>
+						<td class="d">ZPG</td>
+						<td class="d">ZPX</td>
+						<td class="d">ZPY</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$92</td>
+						<td class="d">$32</td>
+						<td class="d">$22</td>
+						<td class="d">$26</td>
+						<td class="d">$2A</td>
+						<td class="d">$2E</td>
+						<td class="d">$35</td>
+						<td class="d">$3A</td>
+						<td class="d">$3E</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>SEC</h4>
+			</td>
+			<td class="pad">
+				Set Carry Flag<br>
+				1 -> C
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - 1
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$17</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>SEF</h4>
+			</td>
+			<td class="pad">
+				Set Float Flag<br>
+				1 -> F
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - 1 - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$57</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>SEC</h4>
+			</td>
+			<td class="pad">
+				Set IRQ Flag<br>
+				1 -> I
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - 1 - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$37</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>SEP</h4>
+			</td>
+			<td class="pad">
+				Set Status Bits<br>
+				P or M -> P
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				? ? ? ? ? ?
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">ACC</td>
+						<td class="d">IMM</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$0B</td>
+						<td class="d">$03</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>STA</h4>
+			</td>
+			<td class="pad">
+				Store Accumulator<br>
+				A -> M
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">DIR</td>
+						<td class="d">DRX</td>
+						<td class="d">DRY</td>
+						<td class="d">ZPG</td>
+						<td class="d">ZPX</td>
+						<td class="d">ZPY</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$66</td>
+						<td class="d">$6A</td>
+						<td class="d">$6E</td>
+						<td class="d">$76</td>
+						<td class="d">$7A</td>
+						<td class="d">$7E</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>STB</h4>
+			</td>
+			<td class="pad">
+				Store Buffer<br>
+				B -> M
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">DIR</td>
+						<td class="d">DRX</td>
+						<td class="d">DRY</td>
+						<td class="d">ZPG</td>
+						<td class="d">ZPX</td>
+						<td class="d">ZPY</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$86</td>
+						<td class="d">$8A</td>
+						<td class="d">$8E</td>
+						<td class="d">$96</td>
+						<td class="d">$9A</td>
+						<td class="d">$9E</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>STD</h4>
+			</td>
+			<td class="pad">
+				Store Data<br>
+				D -> M
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">DIR</td>
+						<td class="d">DRX</td>
+						<td class="d">DRY</td>
+						<td class="d">ZPG</td>
+						<td class="d">ZPX</td>
+						<td class="d">ZPY</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$E6</td>
+						<td class="d">$EA</td>
+						<td class="d">$EE</td>
+						<td class="d">$F6</td>
+						<td class="d">$FA</td>
+						<td class="d">$FE</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>STX</h4>
+			</td>
+			<td class="pad">
+				Store X<br>
+				X -> M
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">DIR</td>
+						<td class="d">DRX</td>
+						<td class="d">DRY</td>
+						<td class="d">ZPG</td>
+						<td class="d">ZPX</td>
+						<td class="d">ZPY</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$A6</td>
+						<td class="d">$AA</td>
+						<td class="d">$AE</td>
+						<td class="d">$B6</td>
+						<td class="d">$BA</td>
+						<td class="d">$BE</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>STY</h4>
+			</td>
+			<td class="pad">
+				Store Y<br>
+				Y -> M
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">DIR</td>
+						<td class="d">DRX</td>
+						<td class="d">DRY</td>
+						<td class="d">ZPG</td>
+						<td class="d">ZPX</td>
+						<td class="d">ZPY</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$C6</td>
+						<td class="d">$CA</td>
+						<td class="d">$CE</td>
+						<td class="d">$D6</td>
+						<td class="d">$DA</td>
+						<td class="d">$DE</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>STZ</h4>
+			</td>
+			<td class="pad">
+				Store Zero<br>
+				0 -> M
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">DIR</td>
+						<td class="d">DRX</td>
+						<td class="d">DRY</td>
+						<td class="d">ZPG</td>
+						<td class="d">ZPX</td>
+						<td class="d">ZPY</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$46</td>
+						<td class="d">$4A</td>
+						<td class="d">$4E</td>
+						<td class="d">$56</td>
+						<td class="d">$5A</td>
+						<td class="d">$5E</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>TAB</h4>
+			</td>
+			<td class="pad">
+				Transfer Accumulator to Buffer<br>
+				A -> B
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$0F</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>TAX</h4>
+			</td>
+			<td class="pad">
+				Transfer Accumulator to X<br>
+				A -> X
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$1F</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>TAY</h4>
+			</td>
+			<td class="pad">
+				Transfer Accumulator to Y<br>
+				A -> Y
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$2F</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>TBA</h4>
+			</td>
+			<td class="pad">
+				Transfer Buffer to Accumulator<br>
+				B -> A
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$3F</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>TDH</h4>
+			</td>
+			<td class="pad">
+				Transfer Data to High<br>
+				D -> H
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$BF</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>THD</h4>
+			</td>
+			<td class="pad">
+				Transfer High to Data<br>
+				H -> D
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$AF</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>TRB</h4>
+			</td>
+			<td class="pad">
+				Test and Reset Bits<br>
+				M and D, M and (not D) -> M
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">DIR</td>
+						<td class="d">ZPG</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$3B</td>
+						<td class="d">$33</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>TSB</h4>
+			</td>
+			<td class="pad">
+				Test and Set Bits<br>
+				M and D, M or D -> M
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">DIR</td>
+						<td class="d">ZPG</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$2B</td>
+						<td class="d">$23</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>TSX</h4>
+			</td>
+			<td class="pad">
+				Transfer Stack to X<br>
+				S -> X
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$9F</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>TXA</h4>
+			</td>
+			<td class="pad">
+				Transfer X to Accumulator<br>
+				X -> A
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$4F</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>TXS</h4>
+			</td>
+			<td class="pad">
+				Transfer X to Stack<br>
+				X -> S
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$8F</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>TXY</h4>
+			</td>
+			<td class="pad">
+				Transfer X to Y<br>
+				X -> Y
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$5F</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>TYA</h4>
+			</td>
+			<td class="pad">
+				Transfer Y to Accumulator<br>
+				Y -> A
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$6F</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>TYX</h4>
+			</td>
+			<td class="pad">
+				Transfer Y to X<br>
+				Y -> X
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$7F</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>WAI</h4>
+			</td>
+			<td class="pad">
+				Wait for Interrupt<br>
+				jam until IRQ or NMI
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				- - - - - -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">IMP</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$18</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="pad">
+				<h4>XOR</h4>
+			</td>
+			<td class="pad">
+				XOR with Accumulator<br>
+				A xor M -> A
+			</td>
+			<td class="pad">
+				N V F I Z C<br>
+				+ - - - + -
+			</td>
+			<td class="pad">
+				<table class="description">
+					<tr class="d">
+						<th class="d">Mode</th>
+						<td class="d">BUF</td>
+						<td class="d">IMM</td>
+						<td class="d">DIM</td>
+						<td class="d">DIR</td>
+						<td class="d">DRX</td>
+						<td class="d">DRY</td>
+						<td class="d">ZPG</td>
+						<td class="d">ZPX</td>
+						<td class="d">ZPY</td>
+					</tr>
+					<tr class="d">
+						<th class="d">Opcode</th>
+						<td class="d">$C2</td>
+						<td class="d">$51</td>
+						<td class="d">$41</td>
+						<td class="d">$45</td>
+						<td class="d">$49</td>
+						<td class="d">$4D</td>
+						<td class="d">$55</td>
+						<td class="d">$59</td>
+						<td class="d">$5D</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr style="border: 1px solid;">
+			<td class="pad" colspan="4">
+				- does not change &emsp; + changes &emsp; 0 resets &emsp; 1 sets &emsp; $ is only used &emsp; ? is directly copied 
 			</td>
 		</tr>
 	</table>
+
+	<!-- vectors-->
+	<p><b>Vectors</b>:</p>
+	<p>To specify where the CPU should start to execute the code, ROM should contain vectors that point to interrupt entries:</p>
+	<table class="description">
+		<tr class="d">
+			<th class="d" id="c">Address</th>
+			<th class="d" id="c">Name</th>
+			<th class="d" id="c">Interrupt</th>
+			<th class="d" id="c">Description</th>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$FFFA - $FFFB</td>
+			<td class="d" id="c">IRQ</td>
+			<td class="d" id="c">Yes</td>
+			<td class="d">Interrupt that can be triggered by CPU pin or by software. IRQ Flag will not forbid hardware interrupts.</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$FFFC - $FFFD</td>
+			<td class="d" id="c">RST</td>
+			<td class="d" id="c">No</td>
+			<td class="d">Program entry for the CPU. Instruction Pointer will be set to RST vector after reseting the CPU.</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$FFFE - $FFFF</td>
+			<td class="d" id="c">NMI</td>
+			<td class="d" id="c">Yes</td>
+			<td class="d">Non-maskable Interrupt is triggered by hardware pin. IRQ Flag does not affect NMI triggering.</td>
+		</tr>
+	</table>
+
+	<!-- misc -->
+	<p><b>Subtraction</b>:</p>
+	ALU performs subtraction by using addition:<br>
+	&emsp;SBC = A + (not B) + C
+	<p>This leads to the next results:</p>
+	<p><b>Flags after Subtraction (a - b)</b>:</p>
+	<table class="description">
+		<tr class="d">
+			<th class="d">Numbers</th>
+			<th class="d">N</th>
+			<th class="d">Z</th>
+			<th class="d">C</th>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">a > b</td>
+			<td class="d">?</td>
+			<td class="d">0</td>
+			<td class="d">1</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">a = b</td>
+			<td class="d">0</td>
+			<td class="d">1</td>
+			<td class="d">1</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">a < b</td>
+			<td class="d">?</td>
+			<td class="d">0</td>
+			<td class="d">0</td>
+		</tr>
+	</table>
+	<p><b>Branches as Logical Conditions</b>:</p>
+	<table class="description">
+		<tr class="d">
+			<th class="d">Opcode</th>
+			<th class="d">Sign</th>
+			<th class="d">Logical Condition</th>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">BEQ</td>
+			<td class="d" id="c">=</td>
+			<td class="d">Equal</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">BNE</td>
+			<td class="d" id="c">!=</td>
+			<td class="d">Not Equal</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">BCC</td>
+			<td class="d" id="c"><</td>
+			<td class="d">Less</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">BCS</td>
+			<td class="d" id="c">>=</td>
+			<td class="d">Greater or Equal</td>
+		</tr>
+	</table><hr>
+
+	<h1>Console</h1>
+	<!-- mapping -->
+	<p><b>Processor</b>:</p>
+	<p>This console uses X65 CPU (described earlier). As console needs to communicate to different devices at once, different memory locations are mapped to different devices.</p>
+	<table class="description">
+		<tr class="d">
+			<th class="d">Address</th>
+			<th class="d">Device</th>
+		</tr>
+		<tr class="d">
+			<td class="d">$0000 - $3FFF</td>
+			<td class="d">RAM</td>
+		</tr>
+		<tr class="d">
+			<td class="d">$4000 - $5FFF</td>
+			<td class="d">Registers</td>
+		</tr>
+		<tr class="d">
+			<td class="d">$6000 - $7FFF</td>
+			<td class="d">SRAM</td>
+		</tr>
+		<tr class="d">
+			<td class="d">$8000 - $FFFF</td>
+			<td class="d">ROM</td>
+		</tr>
+	</table>
+	<ul>
+		<li>Register space is not fully filled.</li>
+		<li>SRAM is Save RAM; It supports 8 banks.</li>
+		<li>ROM is dividen on 8 banks, each containing 4096 bytes.</li>
+		<li>There can be up to 256 ROM banks.</li>
+		<li>First ROM bank is the default bank.</li>
+	</ul>
+	<p>Due to small amount of memory accessible by CPU, external banks are provided.</p>
+	<p><b>Bank Registers</b>:</p>
+	<table class="description">
+		<tr class="d">
+			<th class="d" id="c">Address</th>
+			<th class="d" id="c">Name</th>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$4010</td>
+			<td class="d" id="c">Bank 0 ($8000 - $8FFF)</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$4011</td>
+			<td class="d" id="c">Bank 1 ($9000 - $9FFF)</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$4012</td>
+			<td class="d" id="c">Bank 2 ($A000 - $AFFF)</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$4013</td>
+			<td class="d" id="c">Bank 3 ($B000 - $BFFF)</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$4014</td>
+			<td class="d" id="c">Bank 4 ($C000 - $CFFF)</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$4015</td>
+			<td class="d" id="c">Bank 5 ($D000 - $DFFF)</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$4016</td>
+			<td class="d" id="c">Bank 6 ($E000 - $EFFF)</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$4017</td>
+			<td class="d" id="c">Bank 7 ($F000 - $FFFF)</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$4018</td>
+			<td class="d" id="c">Bank S (SRAM Bank)</td>
+		</tr>
+	</table>
+
+	<!-- controls -->
+	<p><b>Control</b>:</p>
+	<p>For input, console uses 2 joysticks.</p>
+	<table class="description">
+		<tr class="d">
+			<th class="d" id="c">Address</th>
+			<th class="d" id="c">Name</th>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$5000 - $5001</td>
+			<td class="d" id="c">Joystick 1</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$5002 - $5003</td>
+			<td class="d" id="c">Joystick 2</td>
+		</tr>
+	</table>
+	<p>Fetched data from registers comes in specific form:</p>
+	<b>Joystick Data</b>:<br>
+	----CSLRABXY&larr;&rarr;&uarr;&darr;<br><br>
+	C - Select<br>
+	S - Start<br>
+	L - L Button<br>
+	R - R Button<br>
+	A - A Button<br>
+	B - B Button<br>
+	X - X Button<br>
+	Y - Y Button<br>
+	Arrows - D-pad<br><br>
+
+	<!-- graphics -->
+	<p><b>Graphics</b>:</p>
+	<p>Console outputs graphics using GPU.</p>
+	<ul>
+		<li>To create graphics, GPU uses 8x8 tiles, stored in a seperate <i>CHR ROM</i> with a total amount of 2048 tiles.</li>
+		<li>Each tile has bit depth of 4bpp (bits per pixel), that fetches the colors from one of 16 availabe palettes.</li>
+		<li>The <i>Global Palette</i> consists of 256 colors (16 colors per each palette), which has RGBA 4444 format.</li>
+		<li>GPU output image is 40x30 tiles, or 320x240 pixels.</li>
+		<li>The background color of image is the first color in the <i>Global Palette</i>.</li>
+		<li>Output consists of 2 layers, each having 80x60 tiles.</li>
+		<li>Each layer can be individually scrolled.</li>
+		<li>GPU supports 128 <i>Sprites</i> - independant tiles on the screen.</li>
+		<li><i>Sprites</i> can be drawn below, between or above background layers.</li>
+	</ul>
+	<p>CPU can control GPU by writing to its registers, that are listed below.</p>
+
+	<p><b>GPU registers</b>:</p>
+	<table class="description">
+		<tr class="d">
+			<th class="d" id="c">Address</th>
+			<th class="d" id="c">Name</th>
+			<th class="d" id="c">Function</th>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$4000 - $4001</td>
+			<td class="d" id="c">GPU Bus</td>
+			<td class="d">Accessing VRAM location at <i>Address Pointer</i></td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$4002</td>
+			<td class="d" id="c">GPU Control Register</td>
+			<td class="d">Register for general control</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$4003</td>
+			<td class="d" id="c">GPU Room Register</td>
+			<td class="d">Register for selecting base rooms for scrolling</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$4004 - $4005</td>
+			<td class="d" id="c">GPU VRAM Address</td>
+			<td class="d">Set the value of <i>Address Pointer</i></td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$4006 - $4007</td>
+			<td class="d" id="c">GPU SPR Address</td>
+			<td class="d">Address, where the sprite data will be fetched.</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$4008 - $4009</td>
+			<td class="d" id="c">GPU Layer 0 X-Scroll</td>
+			<td class="d">X - Scrolling for Layer 0</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$400A - $400B</td>
+			<td class="d" id="c">GPU Layer 0 Y-Scroll</td>
+			<td class="d">Y - Scrolling for Layer 0</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$400C - $400D</td>
+			<td class="d" id="c">GPU Layer 1 X-Scroll</td>
+			<td class="d">X - Scrolling for Layer 1</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$400E - $400F</td>
+			<td class="d" id="c">GPU Layer 1 Y-Scroll</td>
+			<td class="d">Y - Scrolling for Layer 1</td>
+		</tr>
+	</table>
+
+	<br><b>Control Register</b>:<br>
+	NS01-BDD<br><br>
+	N - Trigger NMI every frame<br>
+	S - Render <i>Sprites</i><br>
+	0 - Render Layer 0<br>
+	1 - Render Layer 1<br>
+	B - Use <i>Sprite</i> tiles at high part of <i>CHR ROM</i><br>
+	D - Direction, where <i>Address Pointer</i> will advance after access<br>
+	<ul>
+		<li>00 - Move Right</li>
+		<li>01 - Move Down</li>
+		<li>10 - Move Left</li>
+		<li>11 - Move Up</li>
+	</ul>
+
+	<br><b>Room Register</b>:<br>
+	----0011<br><br>
+	0 - Base room for Layer 0<br>
+	1 - Base room for Layer 1<br>
+	The following layout of rooms will be used for later documentation:<br><br>
+	<table>
+		<tr>
+			<td style="border: 1px solid" class="pad">00</td>
+			<td style="border: 1px solid" class="pad">01</td>
+		</tr>
+		<tr>
+			<td style="border: 1px solid" class="pad">10</td>
+			<td style="border: 1px solid" class="pad">11</td>
+		</tr>
+	</table><br>
+
+	<p><b>VRAM Mapping</b>:</p>
+	<p>GPU has its own RAM - VRAM, that is accessible only to GPU. It holds background layouts and <i>Global Palette</i>.</p>
+	<table class="description">
+		<tr class="d">
+			<th class="d">Address</th>
+			<th class="d">Data</th>
+			<th class="d">Description</th>
+		</tr>
+		<tr class="d">
+			<td class="d">$0000 - $01FF</td>
+			<td class="d">Palette</td>
+			<td class="d">256 16-bit numbers that represent colors</td>
+		</tr>
+		<tr class="d">
+			<td class="d">$8000 - $84AF</td>
+			<td class="d">Screen Room 0 of Layer 0</td>
+			<td class="d" rowspan="8" id="c">Stores parts of tile IDs</td>
+		</tr>
+		<tr class="d">
+			<td class="d">$8800 - $8CAF</td>
+			<td class="d">Screen Room 1 of Layer 0</td>
+		</tr>
+		<tr class="d">
+			<td class="d">$9000 - $94AF</td>
+			<td class="d">Screen Room 2 of Layer 0</td>
+		</tr>
+		<tr class="d">
+			<td class="d">$9800 - $9CAF</td>
+			<td class="d">Screen Room 3 of Layer 0</td>
+		</tr>
+		<tr class="d">
+			<td class="d">$A000 - $A4AF</td>
+			<td class="d">Screen Room 0 of Layer 1</td>
+		</tr>
+		<tr class="d">
+			<td class="d">$A800 - $ACAF</td>
+			<td class="d">Screen Room 1 of Layer 1</td>
+		</tr>
+		<tr class="d">
+			<td class="d">$B000 - $B4AF</td>
+			<td class="d">Screen Room 2 of Layer 1</td>
+		</tr>
+		<tr class="d">
+			<td class="d">$B800 - $BCAF</td>
+			<td class="d">Screen Room 3 of Layer 1</td>
+		</tr>
+		<tr class="d">
+			<td class="d">$C000 - $C4AF</td>
+			<td class="d">Attribute Room 0 of Layer 0</td>
+			<td class="d" rowspan="8" id="c">Stores tile banks and palette</td>
+		</tr>
+		<tr class="d">
+			<td class="d">$C800 - $CCAF</td>
+			<td class="d">Attribute Room 1 of Layer 0</td>
+		</tr>
+		<tr class="d">
+			<td class="d">$D000 - $D4AF</td>
+			<td class="d">Attribute Room 2 of Layer 0</td>
+		</tr>
+		<tr class="d">
+			<td class="d">$D800 - $DCAF</td>
+			<td class="d">Attribute Room 3 of Layer 0</td>
+		</tr>
+		<tr class="d">
+			<td class="d">$E000 - $E4AF</td>
+			<td class="d">Attribute Room 0 of Layer 1</td>
+		</tr>
+		<tr class="d">
+			<td class="d">$E800 - $ECAF</td>
+			<td class="d">Attribute Room 1 of Layer 1</td>
+		</tr>
+		<tr class="d">
+			<td class="d">$F000 - $F4AF</td>
+			<td class="d">Attribute Room 2 of Layer 1</td>
+		</tr>
+		<tr class="d">
+			<td class="d">$F800 - $FCAF</td>
+			<td class="d">Attribute Room 3 of Layer 1</td>
+		</tr>
+	</table>
+	<p>Each table holds 1200 (40x30) bytes of either <i>Screen</i> or <i>Attribute</i> data.</p>
+	<b>Attribute Data & Screen Data</b>:<br>
+	PPPP--TT TTTTTTTT<br><br>
+	P - Palette ID<br>
+	T - Tile ID<br><br>
+
+	<p><b>Sprites</b>:</p>
+	<p><i>Sprite</i> Data will be grabbed from the CPU RAM during the beginning of rendering the frame.</p>
+	<p>It will be fetched from the <i>Sprite Address</i> set in the GPU. 768 bytes will be fetched.</p>
+	<table class="description">
+		<tr class="d">
+			<th class="d">Offset</th>
+			<th class="d">Entry Size</th>
+			<th class="d">Description</th>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$000 - $0FF</td>
+			<td class="d" id="c">2 bytes</td>
+			<td class="d">X Position. Uses <i>Signed Integer</i></td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$100 - $1FF</td>
+			<td class="d" id="c">2 bytes</td>
+			<td class="d">Y Position. Uses <i>Signed Integer</i></td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$200 - $2FF</td>
+			<td class="d" id="c">2 bytes</td>
+			<td class="d">Attribute Data</td>
+		</tr>
+	</table>
+	<br><b>Attribute Data</b>:<br>
+	PPPPLLTT TTTTTTTT (Big Endian)<br><br>
+	P - Palette ID<br>
+	T - Tile ID<br>
+	L - Layer<br>
+	<ul>
+		<li>00 - Under Layer 0</li>
+		<li>01 - Between Layers</li>
+		<li>1x - Above Layer 1</li>
+	</ul>
+
+	<!-- audio -->
+	<p><b>Audio</b>:</p>
+	<p>APU is a seperate processor that produces sound.</p>
+	<ul>
+		<li>APU has 8 channels that playback samples.</li>
+		<li>There can be up to 128 samples, that are made of 256 8-bit samples.</li>
+		<li>Stereo audio is also supported.</li>
+	</ul>
+	<p>As GPU, APU is controlled by registers.</p>
+	<p><b>APU Registers</b>:</p>
+	<table class="d">
+		<tr class="d">
+			<th class="d" id="c">Channel</th>
+			<td class="d" id="c" colspan="2">0</td>
+			<td class="d" id="c" colspan="2">1</td>
+			<td class="d" id="c" colspan="2">2</td>
+			<td class="d" id="c" colspan="2">3</td>
+			<td class="d" id="c" colspan="2">4</td>
+			<td class="d" id="c" colspan="2">5</td>
+			<td class="d" id="c" colspan="2">6</td>
+			<td class="d" id="c" colspan="2">7</td>
+		</tr>
+		<tr class="d">
+			<th class="d" id="c">Part</th>
+			<td class="d" id="c">L</td>
+			<td class="d" id="c">H</td>
+			<td class="d" id="c">L</td>
+			<td class="d" id="c">H</td>
+			<td class="d" id="c">L</td>
+			<td class="d" id="c">H</td>
+			<td class="d" id="c">L</td>
+			<td class="d" id="c">H</td>
+			<td class="d" id="c">L</td>
+			<td class="d" id="c">H</td>
+			<td class="d" id="c">L</td>
+			<td class="d" id="c">H</td>
+			<td class="d" id="c">L</td>
+			<td class="d" id="c">H</td>
+			<td class="d" id="c">L</td>
+			<td class="d" id="c">H</td>
+		</tr>
+		<tr class="d">
+			<th class="d">Frequency</th>
+			<td class="d">$5000</td>
+			<td class="d">$5001</td>
+			<td class="d">$5002</td>
+			<td class="d">$5003</td>
+			<td class="d">$5004</td>
+			<td class="d">$5005</td>
+			<td class="d">$5006</td>
+			<td class="d">$5007</td>
+			<td class="d">$5008</td>
+			<td class="d">$5009</td>
+			<td class="d">$500A</td>
+			<td class="d">$500B</td>
+			<td class="d">$500C</td>
+			<td class="d">$500D</td>
+			<td class="d">$500E</td>
+			<td class="d">$500F</td>
+		</tr>
+		<tr class="d">
+			<th class="d">Volume</th>
+			<td class="d">$5010</td>
+			<td class="d">$5011</td>
+			<td class="d">$5012</td>
+			<td class="d">$5013</td>
+			<td class="d">$5014</td>
+			<td class="d">$5015</td>
+			<td class="d">$5016</td>
+			<td class="d">$5017</td>
+			<td class="d">$5018</td>
+			<td class="d">$5019</td>
+			<td class="d">$501A</td>
+			<td class="d">$501B</td>
+			<td class="d">$501C</td>
+			<td class="d">$501D</td>
+			<td class="d">$501E</td>
+			<td class="d">$501F</td>
+		</tr>
+		<tr class="d">
+			<th class="d">Waveform</th>
+			<td class="d">$5020</td>
+			<td class="d">$5021</td>
+			<td class="d">$5022</td>
+			<td class="d">$5023</td>
+			<td class="d">$5024</td>
+			<td class="d">$5025</td>
+			<td class="d">$5026</td>
+			<td class="d">$5027</td>
+			<td class="d">$5028</td>
+			<td class="d">$5029</td>
+			<td class="d">$502A</td>
+			<td class="d">$502B</td>
+			<td class="d">$502C</td>
+			<td class="d">$502D</td>
+			<td class="d">$502E</td>
+			<td class="d">$502F</td>
+		</tr>
+		<tr class="d">
+			<th class="d">Control</th>
+			<td class="d" colspan="16" id="c">$5030</td>
+		</tr>
+		<tr>
+			<td colspan="17" id="c">Volume L - Volume Left &emsp; Volume H - Volume Right</td>
+		</tr>
+	</table>
+	<br><b>Control Register</b>:<br>
+	01234567<br><br>
+	X - Enable Channel X<br><br>
+
+	<!-- cartridge file map -->
+	<p><b>Cartridge Mapping</b>:</p>
+	<p>As cartridge data is made up of 3 ROMs, it is packed in a single file in a certain way.</p>
+	<p>At the beginning of file 16-byte <i>Header</i> is located.</p>
+	<p><b>Header Structure</b>:</p>
+	<table class="description">
+		<tr class="d">
+			<th class="d">Offset</th>
+			<th class="d">Values</th>
+			<th class="d">Description</th>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$00 - $03</td>
+			<td class="d" id="c">"x65\0"</td>
+			<td class="d">Signature</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$04 - $05</td>
+			<td class="d" id="c">0 - 256</td>
+			<td class="d">PRG ROM Bank count (Bank size = 4096)</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$06</td>
+			<td class="d" id="c">0 - 128</td>
+			<td class="d">DSD ROM Bank count (Bank size = 256)</td>
+		</tr>
+		<tr class="d">
+			<td class="d" id="c">$07 - $0F</td>
+			<td class="d" id="c">-</td>
+			<td class="d">Unused</td>
+		</tr>
+	</table>
+	<p>It is followed by the specified amount of PRG and DSD banks. The remaining data will be treated as CHR ROM.</p>
+
+	<!-- scripts -->
+	<script>
+		// parameter list
+		const NOT = 0;
+		const IMP = 1;
+		const ACC = 2;
+		const BUF = 3;
+		const IMM = 4;
+		const DIM = 5;
+		const REL = 6;
+		const DIR = 7;
+		const DRX = 8;
+		const DRY = 9;
+		const ZPG = 10;
+		const ZPX = 11;
+		const ZPY = 12;
+		const IND = 13;
+
+		// instruction table
+		const opcodeTable = [
+			"NOP", "AND", "ADC", "SEP", "ASL", "AND", "ADC", "CLC", "JAM", "AND", "ADC", "SEP", "ASL", "AND", "ADC", "TAB",
+			"BPL", "AND", "ADC", "REP", "ASL", "AND", "ADC", "SEC", "WAI", "AND", "ADC", "REP", "ASL", "AND", "ADC", "TAX",
+			"JSR", "ORA", "SBC", "TSB", "LSR", "ORA", "SBC", "CLI", "INS", "ORA", "SBC", "TSB", "LSR", "ORA", "SBC", "TAY",
+			"BMI", "ORA", "SBC", "TRB", "LSR", "ORA", "SBC", "SEI", "DES", "ORA", "SBC", "TRB", "LSR", "ORA", "SBC", "TBA",
+			"RTI", "XOR", "INX", "PEA", "ROL", "XOR", "STZ", "CLF", "PHP", "XOR", "STZ", "BRK", "ROL", "XOR", "STZ", "TXA",
+			"BVC", "XOR", "INY", 0,     "ROL", "XOR", "STZ", "SEF", "PLP", "XOR", "STZ", 0,     "ROL", "XOR", "STZ", "TXY",
+			"RTS", "LTA", "DEX", 0,     "ROR", "LTA", "STA", "INC", "PHA", "LTA", "STA", 0,     "ROR", "LTA", "STA", "TYA",
+			"BVS", "LTA", "DEY", 0,     "ROR", "LTA", "STA", "DEC", "PLA", "LTA", "STA", 0,     "ROR", "LTA", "STA", "TYX",
+			"CLV", "LTB", "ADC", 0,     "CMP", "LTB", "STB", 0,     "PHB", "LTB", "STB", 0,     "CMP", "LTB", "STB", "TXS",
+			"BCC", "LTB", "SBC", 0,     "CMP", "LTB", "STB", 0,     "PLB", "LTB", "STB", 0,     "CMP", "LTB", "STB", "TSX",
+			"MUL", "LTX", "AND", 0,     "CPX", "LTX", "STX", 0,     "PHX", "LTX", "INC", 0,     "BIT", "LTX", "STX", "THD",
+			"BCS", "LTX", "ORA", 0,     "CPX", "LTX", "STX", 0,     "PLX", "LTX", "INC", 0,     "CPX", "LTX", "STX", "TDH",
+			"DIV", "LTY", "XOR", 0,     "CPY", "LTY", "STY", 0,     "PHY", "LTY", "STY", 0,     "CPY", "LTY", "DEC", "BRA",
+			"BNE", "LTY", "CMP", 0,     "CPY", "LTY", "STY", 0,     "PLY", "LTY", "STY", 0,     "BIT", "LTY", "DEC", "JMP",
+			"MOD", "LTV", "CPX", 0,     "CMD", "LTD", "STD", 0,     "PHD", "LTD", "STD", 0,     "CMD", "LTD", "STD", "JMP",
+			"BEQ", "LTD", "CPY", 0,     "CMD", "LTD", "STD", 0,     "PLD", "LTD", "STD", 0,     "CMD", "LTD", "STD", "JSR"
+		];
+
+		// parameter table
+		const paramTable = [
+			IMP, DIM, DIM, IMM, DIR, DIR, DIR, IMP, IMP, DRX, DRX, ACC, DRX, DRY, DRY, IMP,
+			REL, IMM, IMM, IMM, ACC, ZPG, ZPG, IMP, IMP, ZPX, ZPX, ACC, DRY, ZPY, ZPY, IMP,
+			DIR, DIM, DIM, ZPG, DIR, DIR, DIR, IMP, IMP, DRX, DRX, DIR, DRX, DRY, DRY, IMP,
+			REL, IMM, IMM, ZPG, ACC, ZPG, ZPG, IMP, IMP, ZPX, ZPX, DIR, DRY, ZPY, ZPY, IMP,
+			IMP, DIM, IMP, DIR, DIR, DIR, DIR, IMP, IMP, DRX, DRX, IMM, DRX, DRY, DRY, IMP,
+			REL, IMM, IMP, NOT, ACC, ZPG, ZPG, IMP, IMP, ZPX, ZPX, NOT, DRY, ZPY, ZPY, IMP,
+			IMP, DIM, IMP, NOT, DIR, DIR, DIR, ACC, IMP, DRX, DRX, NOT, DRX, DRY, DRY, IMP,
+			REL, IMM, IMP, NOT, ACC, ZPG, ZPG, ACC, IMP, ZPX, ZPX, NOT, DRY, ZPY, ZPY, IMP,
+			IMP, DIM, BUF, NOT, DIR, DIR, DIR, NOT, IMP, DRX, DRX, NOT, DRX, DRY, DRY, IMP,
+			REL, IMM, BUF, NOT, DIM, ZPG, ZPG, NOT, IMP, ZPX, ZPX, NOT, DRY, ZPY, ZPY, IMP,
+			BUF, DIM, BUF, NOT, DIR, DIR, DIR, NOT, IMP, DRX, DIR, NOT, DIR, DRY, DRY, IMP,
+			REL, IMM, BUF, NOT, DIM, ZPG, ZPG, NOT, IMP, ZPX, ZPG, NOT, DRY, ZPY, ZPY, IMP,
+			BUF, DIM, BUF, NOT, DIR, DIR, DIR, NOT, IMP, DRX, DRX, NOT, DRX, DRY, DIR, REL,
+			REL, IMM, BUF, NOT, DIM, ZPG, ZPG, NOT, IMP, ZPX, ZPX, NOT, BUF, ZPY, ZPG, DIR,
+			BUF, IND, BUF, NOT, DIR, DIR, DIR, NOT, IMP, DRX, DRX, NOT, DRX, DRY, DRY, IND,
+			REL, IMM, BUF, NOT, IMM, ZPG, ZPG, NOT, IMP, ZPX, ZPX, NOT, DRY, ZPY, ZPY, IND
+		];
+
+		// opcode names
+		const actionNames = {
+			0: "-",
+			"NOP": "No Operation",
+			"WAI": "Wait for Interrupt",
+			"JAM": "Jam Processor",
+			"PHP": "Push Processor Status",
+			"PLP": "Pull Processor Status",
+			"PHA": "Push Accumulator",
+			"PLA": "Pull Accumulator",
+			"PHB": "Push Buffer",
+			"PLB": "Pull Buffer",
+			"PHX": "Push X",
+			"PLX": "Pull X",
+			"PHY": "Push Y",
+			"PLY": "Pull Y",
+			"PHD": "Push Data",
+			"PLD": "Pull Data",
+			"TAB": "Transfer Accumulator to Buffer",
+			"TAX": "Transfer Accumulator to X",
+			"TAY": "Transfer Accumulator to Y",
+			"TBA": "Transfer Buffer to Accumulator",
+			"TXA": "Transfer X to Accumulator",
+			"TXY": "Transfer X to Y",
+			"TYA": "Transfer Y to Accumulator",
+			"TYX": "Transfer Y to X",
+			"TXS": "Transfer X to Stack",
+			"TSX": "Transfer Stack to X",
+			"THD": "Transfer High to Data",
+			"TDH": "Transfer Data to High",
+			"CLC": "Clear Carry Flag",
+			"SEC": "Set Carry Flag",
+			"CLI": "Clear Interrupt Flag",
+			"SEI": "Set Interrupt Flag",
+			"CLF": "Clear Float Flag",
+			"SEF": "Set Float Flag",
+			"CLV": "Clear Overflow Flag",
+			"INX": "Increment X",
+			"DEX": "Decrement X",
+			"INY": "Increment Y",
+			"DEY": "Decrement Y",
+			"INS": "Increment Stack",
+			"DES": "Decrement Stack",
+			"ASL": "Arithmetic Shift Left",
+			"LSR": "Logical Shift Right",
+			"ROL": "Rotate Left",
+			"ROR": "Rotate Right",
+			"CMP": "Compare Accumulator",
+			"CPX": "Compare X",
+			"CPY": "Compare Y",
+			"CMD": "Compare Data",
+			"AND": "AND with Accumulator",
+			"ORA": "OR with Accumulator",
+			"XOR": "XOR with Accumulator",
+			"LTA": "Load to Accumulator",
+			"LTB": "Load to Buffer",
+			"LTX": "Load to X",
+			"LTY": "Load to Y",
+			"LTD": "Load to Data",
+			"ADC": "Add with Carry",
+			"SBC": "Subtract with Carry",
+			"STZ": "Store Zero",
+			"STA": "Store Accumulator",
+			"STB": "Store Buffer",
+			"STX": "Store X",
+			"STY": "Store Y",
+			"STD": "Store Data",
+			"BPL": "Branch on Plus",
+			"BMI": "Branch on Minus",
+			"BVC": "Branch on Overflow Clear",
+			"BVS": "Branch on Overflow Set",
+			"BCC": "Branch on Carry Clear",
+			"BCS": "Branch on Carry Set",
+			"BNE": "Branch on Not Equal",
+			"BEQ": "Branch on Equal",
+			"BRA": "Branch Always",
+			"INC": "Increment",
+			"DEC": "Decrement",
+			"BIT": "Bit test",
+			"MUL": "Multiply with Buffer",
+			"DIV": "Divide with Buffer",
+			"MOD": "Modulo with Buffer",
+			"LTV": "Load to Stack Limit",
+			"JMP": "Jump to Address",
+			"JSR": "Jump to Subroutine",
+			"RTS": "Return from Subroutine",
+			"RTI": "Return from Interrupt",
+			"SEP": "Set Status Bits",
+			"REP": "Reset Status Bits",
+			"TSB": "Test and Set Bits",
+			"TRB": "Test and Reset Bits",
+			"PEA": "Push Effective Address",
+			"BRK": "Force Break"
+		};
+
+		// parameter names
+		const paramNames = {
+			0x0: "-",
+			0x1: "Implied",
+			0x2: "Accumulator",
+			0x3: "Buffer",
+			0x4: "Immediate Byte",
+			0x5: "Immediate Word",
+			0x6: "Relative",
+			0x7: "Direct",
+			0x8: "Direct X",
+			0x9: "Direct Y",
+			0xA: "Zeropage",
+			0xB: "Zeropage X",
+			0xC: "Zeropage Y",
+			0xD: "Indirect"
+		};
+
+		// update opcode details
+		var details = function(id) {
+			var cell = document.getElementById("opcode-table").firstElementChild.children[(id >> 4) + 1].children[(id & 15) + 1];
+			var byte = document.getElementById("dtl-byte");
+			var opc  = document.getElementById("dtl-opc");
+			var act  = document.getElementById("dtl-act");
+			var mode = document.getElementById("dtl-mode");
+			var desc = document.getElementById("details-table");
+
+			if (id >= 0) {
+				byte.innerHTML = "$" + (id < 0x10 ? "0" : "") + id.toString(16).toUpperCase();
+				mode.innerHTML = paramNames[paramTable[id]];
+				act.innerHTML = actionNames[opcodeTable[id]];
+				opc.innerHTML = opcodeTable[id];
+
+				desc.style.left = cell.offsetLeft + "px";
+				desc.style.top = cell.offsetTop + cell.offsetHeight + 144 + "px";
+				desc.hidden = false;
+
+				var table = document.getElementById("opcode-table").firstElementChild;
+				for (var y = 0; y < 16; y++) {
+					for (var x = 0; x < 16; x++) {
+						var i = table.children[y + 1].children[x + 1];
+						if (i.innerHTML.includes(opcodeTable[id])) {
+							if (y * 16 + x != id) {
+								i.className = "hh";
+							};
+						};
+					};
+				};
+			} else {
+				desc.hidden = true;
+
+				var table = document.getElementById("opcode-table").firstElementChild;
+				for (var y = 0; y < 16; y++) {
+					for (var x = 0; x < 16; x++) {
+						var i = table.children[y + 1].children[x + 1];
+						i.className = "h";
+					};
+				};
+			};
+		};
+
+		// go to opcode description
+		var branch = function(id) {
+			var table = document.getElementsByClassName("shift")[0].firstElementChild;
+			var opc = opcodeTable[id];
+
+			for (var i = 0; i < 90; i++) {
+				var element = table.children[i].firstElementChild;
+				if (element.innerText == opc) {
+					element.scrollIntoView({
+						behavior: "smooth"
+					});
+					return;
+				};
+			};
+		};
+
+		// initial settings
+		var desc = document.getElementById("details-table");
+		desc.hidden = true;
+	</script>
 </body>
 </html>
