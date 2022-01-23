@@ -3392,7 +3392,7 @@
 	</table>
 	<p>Fetched data from registers comes in specific form:</p>
 	<b>Joystick Data</b>:<br>
-	----CSLRABXY&larr;&rarr;&uarr;&darr;<br><br>
+	I---CSLRABXY&larr;&rarr;&uarr;&darr;<br><br>
 	C - Select<br>
 	S - Start<br>
 	L - L Button<br>
@@ -3401,7 +3401,12 @@
 	B - B Button<br>
 	X - X Button<br>
 	Y - Y Button<br>
-	Arrows - D-pad<br><br>
+	Arrows - D-pad<br>
+	I - Input Device
+	<ul>
+		<li>0 - Keyboard</li>
+		<li>1 - Joystick</li>
+	</ul><br>
 
 	<!-- graphics -->
 	<p><b>Graphics</b>:</p>
@@ -3483,8 +3488,8 @@
 	D - Direction, where <i>Address Pointer</i> will advance after access<br>
 	<ul>
 		<li>00 - Move Right</li>
-		<li>01 - Move Down</li>
-		<li>10 - Move Left</li>
+		<li>01 - Move Left</li>
+		<li>10 - Move Down</li>
 		<li>11 - Move Up</li>
 	</ul>
 
@@ -3631,7 +3636,7 @@
 	<p>APU is a seperate processor that produces sound.</p>
 	<ul>
 		<li>APU has 8 channels that playback samples.</li>
-		<li>There can be up to 128 samples, that are made of 256 8-bit samples.</li>
+		<li>There can be up to 128 samples, that are made of 512 8-bit samples.</li>
 		<li>Stereo audio is also supported.</li>
 	</ul>
 	<p>As GPU, APU is controlled by registers.</p>
@@ -3668,65 +3673,76 @@
 			<td class="d" id="c">H</td>
 		</tr>
 		<tr class="d">
-			<th class="d">Frequency</th>
-			<td class="d">$5000</td>
-			<td class="d">$5001</td>
-			<td class="d">$5002</td>
-			<td class="d">$5003</td>
-			<td class="d">$5004</td>
-			<td class="d">$5005</td>
-			<td class="d">$5006</td>
-			<td class="d">$5007</td>
-			<td class="d">$5008</td>
-			<td class="d">$5009</td>
-			<td class="d">$500A</td>
-			<td class="d">$500B</td>
-			<td class="d">$500C</td>
-			<td class="d">$500D</td>
-			<td class="d">$500E</td>
-			<td class="d">$500F</td>
+			<th class="d" id="c">Frequency</th>
+			<td class="d" id="c">$5000</td>
+			<td class="d" id="c">$5001</td>
+			<td class="d" id="c">$5002</td>
+			<td class="d" id="c">$5003</td>
+			<td class="d" id="c">$5004</td>
+			<td class="d" id="c">$5005</td>
+			<td class="d" id="c">$5006</td>
+			<td class="d" id="c">$5007</td>
+			<td class="d" id="c">$5008</td>
+			<td class="d" id="c">$5009</td>
+			<td class="d" id="c">$500A</td>
+			<td class="d" id="c">$500B</td>
+			<td class="d" id="c">$500C</td>
+			<td class="d" id="c">$500D</td>
+			<td class="d" id="c">$500E</td>
+			<td class="d" id="c">$500F</td>
 		</tr>
 		<tr class="d">
 			<th class="d">Volume</th>
-			<td class="d">$5010</td>
-			<td class="d">$5011</td>
-			<td class="d">$5012</td>
-			<td class="d">$5013</td>
-			<td class="d">$5014</td>
-			<td class="d">$5015</td>
-			<td class="d">$5016</td>
-			<td class="d">$5017</td>
-			<td class="d">$5018</td>
-			<td class="d">$5019</td>
-			<td class="d">$501A</td>
-			<td class="d">$501B</td>
-			<td class="d">$501C</td>
-			<td class="d">$501D</td>
-			<td class="d">$501E</td>
-			<td class="d">$501F</td>
+			<td class="d" id="c">$5010</td>
+			<td class="d" id="c">$5011</td>
+			<td class="d" id="c">$5012</td>
+			<td class="d" id="c">$5013</td>
+			<td class="d" id="c">$5014</td>
+			<td class="d" id="c">$5015</td>
+			<td class="d" id="c">$5016</td>
+			<td class="d" id="c">$5017</td>
+			<td class="d" id="c">$5018</td>
+			<td class="d" id="c">$5019</td>
+			<td class="d" id="c">$501A</td>
+			<td class="d" id="c">$501B</td>
+			<td class="d" id="c">$501C</td>
+			<td class="d" id="c">$501D</td>
+			<td class="d" id="c">$501E</td>
+			<td class="d" id="c">$501F</td>
+		</tr>
+		<tr class="d">
+			<th class="d">Loop</th>
+			<td class="d" id="c">$5020</td>
+			<td class="d" id="c">$5021</td>
+			<td class="d" id="c">$5022</td>
+			<td class="d" id="c">$5023</td>
+			<td class="d" id="c">$5024</td>
+			<td class="d" id="c">$5025</td>
+			<td class="d" id="c">$5026</td>
+			<td class="d" id="c">$5027</td>
+			<td class="d" id="c">$5028</td>
+			<td class="d" id="c">$5029</td>
+			<td class="d" id="c">$502A</td>
+			<td class="d" id="c">$502B</td>
+			<td class="d" id="c">$502C</td>
+			<td class="d" id="c">$502D</td>
+			<td class="d" id="c">$502E</td>
+			<td class="d" id="c">$502F</td>
 		</tr>
 		<tr class="d">
 			<th class="d">Waveform</th>
-			<td class="d">$5020</td>
-			<td class="d">$5021</td>
-			<td class="d">$5022</td>
-			<td class="d">$5023</td>
-			<td class="d">$5024</td>
-			<td class="d">$5025</td>
-			<td class="d">$5026</td>
-			<td class="d">$5027</td>
-			<td class="d">$5028</td>
-			<td class="d">$5029</td>
-			<td class="d">$502A</td>
-			<td class="d">$502B</td>
-			<td class="d">$502C</td>
-			<td class="d">$502D</td>
-			<td class="d">$502E</td>
-			<td class="d">$502F</td>
+			<td class="d" colspan="2" id="c">$5030</td>
+			<td class="d" colspan="2" id="c">$5032</td>
+			<td class="d" colspan="2" id="c">$5034</td>
+			<td class="d" colspan="2" id="c">$5036</td>
+			<td class="d" colspan="2" id="c">$5038</td>
+			<td class="d" colspan="2" id="c">$503A</td>
+			<td class="d" colspan="2" id="c">$503C</td>
+			<td class="d" colspan="2" id="c">$503E</td>
 		</tr>
 		<tr class="d">
 			<th class="d">Control</th>
-			<td class="d" colspan="16" id="c">$5030</td>
+			<td class="d" colspan="16" id="c">$5040</td>
 		</tr>
 		<tr>
 			<td colspan="17" id="c">Volume L - Volume Left &emsp; Volume H - Volume Right</td>
@@ -3760,7 +3776,7 @@
 		<tr class="d">
 			<td class="d" id="c">$06</td>
 			<td class="d" id="c">0 - 128</td>
-			<td class="d">DSD ROM Bank count (Bank size = 256)</td>
+			<td class="d">DSD ROM Bank count (Bank size = 512)</td>
 		</tr>
 		<tr class="d">
 			<td class="d" id="c">$07 - $0F</td>
